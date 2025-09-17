@@ -3,12 +3,20 @@
 import * as THREE from "three";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
+import type { MotionValue } from "framer-motion";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { useMemo, useRef, useState, MouseEvent } from "react";
+import { useMemo, useRef, useState } from "react";
+import type { MouseEvent as ReactMouseEvent } from "react";
 
-function FloatingCoin({ idx = 0 }: { idx?: number }) {
-  // 정확한 타입 지정 (지오메트리/머티리얼 제네릭은 옵션)
-  const mesh = useRef<THREE.Mesh<THREE.TorusKnotGeometry, THREE.MeshStandardMaterial>>(null);
+type FloatingCoinProps = {
+  idx?: number;
+};
+
+function FloatingCoin({ idx = 0 }: FloatingCoinProps) {
+  // 정확한 Three 타입 지정
+  const mesh = useRef<
+    THREE.Mesh<THREE.TorusKnotGeometry, THREE.MeshStandardMaterial>
+  >(null);
 
   const speed = useMemo(() => 0.3 + Math.random() * 0.6, []);
   const phase = useMemo(() => Math.random() * Math.PI * 2, []);
@@ -30,11 +38,13 @@ function FloatingCoin({ idx = 0 }: { idx?: number }) {
 
   return (
     <mesh ref={mesh} castShadow receiveShadow>
-      <torusKnotGeometry args={[0.12 + Math.random() * 0.08, 0.035, 100, 8]} />
+      <torusKnotGeometry
+        args={[0.12 + Math.random() * 0.08, 0.035, 100, 8]}
+      />
       <meshStandardMaterial
         metalness={0.85}
         roughness={0.15}
-        color={idx % 2 ? "#00E5FF" : "#00F5A0"}
+        color={idx % 2 === 0 ? "#00F5A0" : "#00E5FF"}
       />
     </mesh>
   );
@@ -62,19 +72,27 @@ function Scene() {
 
 export default function CryptoInteractiveHero() {
   const [hover, setHover] = useState(false);
+
+  // 포인터 델타 값
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const rx = useSpring(useTransform(y, [-75, 75], [8, -8]), {
-    stiffness: 140,
-    damping: 12,
-  });
-  const ry = useSpring(useTransform(x, [-75, 75], [-8, 8]), {
-    stiffness: 140,
-    damping: 12,
-  });
 
-  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    const rect = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
+  // 부드러운 회전값 (deg 이전 단계: number)
+  const rxBase: MotionValue<number> = useSpring(
+    useTransform(y, [-75, 75], [8, -8]),
+    { stiffness: 140, damping: 12 }
+  );
+  const ryBase: MotionValue<number> = useSpring(
+    useTransform(x, [-75, 75], [-8, 8]),
+    { stiffness: 140, damping: 12 }
+  );
+
+  // CSS 스타일에 넣기 위해 문자열로 변환
+  const rxDeg: MotionValue<string> = useTransform(rxBase, (v) => `${v}deg`);
+  const ryDeg: MotionValue<string> = useTransform(ryBase, (v) => `${v}deg`);
+
+  const handleMouseMove = (e: ReactMouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
     x.set(e.clientX - (rect.left + rect.width / 2));
     y.set(e.clientY - (rect.top + rect.height / 2));
   };
@@ -109,7 +127,7 @@ export default function CryptoInteractiveHero() {
             x.set(0);
             y.set(0);
           }}
-          style={{ rotateX: rx as any, rotateY: ry as any }}
+          style={{ rotateX: rxDeg, rotateY: ryDeg }}
           className="w-full max-w-3xl rounded-2xl border border-white/10 bg-white/5 p-8 shadow-[0_10px_40px_rgba(0,0,0,0.45)] backdrop-blur"
         >
           <motion.div
@@ -125,8 +143,8 @@ export default function CryptoInteractiveHero() {
               코인 투자 인텔리전스의 새로운 기준
             </h1>
             <p className="text-balance text-sm/6 text-white/80 sm:text-base/7">
-              온체인 데이터, 뉴스 시그널, 퀀트 인디케이터를 한 눈에. 신기술 감성의 인터랙션과 함께
-              시장의 맥을 정확히 짚어주는 고급형 인트로 페이지.
+              온체인 데이터, 뉴스 시그널, 퀀트 인디케이터를 한 눈에. 신기술 감성의
+              인터랙션과 함께 시장의 맥을 정확히 짚어주는 고급형 인트로 페이지.
             </p>
             <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:gap-4">
               <motion.a
@@ -165,7 +183,7 @@ export default function CryptoInteractiveHero() {
         </div>
       </div>
 
-      {/* bottom vignette */}
+      {/* Bottom vignette */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#05070B] to-transparent" />
     </div>
   );
