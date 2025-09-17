@@ -66,7 +66,7 @@ export default function Page() {
 
       {/* Footer Section */}
       <footer className="relative z-10 border-t border-white/10 bg-[#05070B] px-6 py-12 text-center text-sm text-white/50">
-        © {new Date().getFullYear()} ogto. All rights reserved.
+        © 2023 ogto. All rights reserved.
       </footer>
     </main>
   );
