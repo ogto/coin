@@ -207,14 +207,14 @@ export default function Hero() {
         className="pointer-events-none absolute inset-x-0 bottom-0 h-44"
         style={{ background: "linear-gradient(to top, rgba(255,255,255,0.95), transparent)" }}
       />
-      <div className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2">
-  <div className="flex items-center gap-2 text-xs text-[#0b1220]/55">
-    <span>Scroll</span>
-    <span className="relative inline-block h-5 w-3 rounded-full border border-[#0b1220]/25">
-      <span className="absolute left-1/2 top-1 h-1 w-1 -translate-x-1/2 animate-bounce rounded-full bg-[#0b1220]/40" />
-    </span>
-  </div>
-</div>
+      <div className="absolute bottom-10 left-1/2 z-10 -translate-x-1/2">
+        <div className="flex items-center gap-3 text-sm text-[#0b1220]/60">
+          <span className="text-base font-medium">Scroll</span>
+          <span className="relative inline-block h-8 w-4 rounded-full border-2 border-[#0b1220]/30">
+            <span className="absolute left-1/2 top-1.5 h-2 w-2 -translate-x-1/2 animate-bounce rounded-full bg-[#0b1220]/50" />
+          </span>
+        </div>
+      </div>
     </div>
   );
 }
