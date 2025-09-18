@@ -1,9 +1,39 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* base */
+  --bg: #0f1720;        /* 아주 진한 남색 대신, 미드톤 다크 */
+  --panel: rgba(255,255,255,0.7);
+  --panel-border: rgba(0,0,0,0.08);
+  --fg: #0b1220;        /* 본문 컬러를 어둡게(라이트 대비) */
+  --fg-weak: rgba(11,18,32,0.7);
+
+  /* accents (파스텔 네온) */
+  --ac1: #7dd3fc;  /* sky-300 */
+  --ac2: #86efac;  /* green-300 */
+
+  /* surfaces (카드/바닥) */
+  --surface: rgba(255,255,255,0.6);
+  --surface-weak: rgba(255,255,255,0.45);
+
+  /* vignette */
+  --vignette: rgba(255,255,255,0.85);
 }
+
+/* 라이트 테마(완전 밝게)로 가고 싶으면 이 클래스를 body에 달면 됨 */
+.theme-light {
+  --bg: #f7fafc;
+  --panel: rgba(255,255,255,0.9);
+  --panel-border: rgba(15,23,42,0.06);
+  --fg: #0b1220;
+  --fg-weak: rgba(11,18,32,0.7);
+  --ac1: #22d3ee;   /* cyan-400 */
+  --ac2: #34d399;   /* emerald-400 */
+  --surface: rgba(255,255,255,0.9);
+  --surface-weak: rgba(255,255,255,0.75);
+  --vignette: rgba(247,250,252,1);
+}
+
 
 @theme inline {
   --color-background: var(--background);
