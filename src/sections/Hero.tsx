@@ -1,220 +1,140 @@
 "use client";
 
-import * as THREE from "three";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
-import type { MotionValue } from "framer-motion";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { useMemo, useRef, useState } from "react";
-import type { MouseEvent as ReactMouseEvent } from "react";
+import { motion } from "framer-motion";
 
-import SubtleGrid from "@/components/SubtleGrid";
-import LightBlobs from "@/components/LightBlobs";
-
-
-/**
- * Light Hero
- * - 다크모드 없음. 밝은 톤만 사용.
- * - A(신뢰/담백) + C(신기술) 카피 믹스.
- * - 인터랙티브 tilt + R3F 부유 오브젝트.
- */
-
-type FloatingKnotProps = { idx?: number };
-
-function FloatingKnot({ idx = 0 }: FloatingKnotProps) {
-  const mesh = useRef<
-    THREE.Mesh<THREE.TorusKnotGeometry, THREE.MeshStandardMaterial>
-  >(null);
-
-  const speed = useMemo(() => 0.3 + Math.random() * 0.6, []);
-  const phase = useMemo(() => Math.random() * Math.PI * 2, []);
-  const radius = useMemo(() => 1.0 + Math.random() * 2.0, []);
-
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime() * speed + phase;
-    const x = Math.cos(t) * radius;
-    const y = Math.sin(t * 0.8) * 0.5 + Math.sin(t * 0.35) * 0.15;
-    const z = Math.sin(t) * (radius * 0.25);
-
-    const m = mesh.current;
-    if (!m) return;
-
-    m.position.set(x, y, z);
-    m.rotation.x += 0.01;
-    m.rotation.y -= 0.008;
-  });
-
-  return (
-    <mesh ref={mesh} castShadow receiveShadow>
-      <torusKnotGeometry args={[0.14, 0.04, 120, 10]} />
-      <meshStandardMaterial
-        metalness={0.6}
-        roughness={0.35}
-        color={idx % 2 === 0 ? "#22d3ee" : "#34d399"} // cyan-400 / emerald-400
-      />
-    </mesh>
-  );
-}
-
-function Scene() {
-  const group = useRef<THREE.Group>(null);
-
-  useFrame((state) => {
-    const g = group.current;
-    if (!g) return;
-    g.rotation.y = Math.sin(state.clock.getElapsedTime() * 0.08) * 0.12;
-  });
-
-  return (
-    <group ref={group}>
-      <ambientLight intensity={1.0} />
-      <directionalLight position={[4, 3, 6]} intensity={1.0} color="#e8fbff" />
-      {Array.from({ length: 48 }).map((_, i) => (
-        <FloatingKnot key={i} idx={i} />
-      ))}
-    </group>
-  );
-}
+const HEADER_H = 64; // px (h-16)
 
 export default function Hero() {
-  const [hover, setHover] = useState(false);
-
-  // Pointer → tilt
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const rxBase: MotionValue<number> = useSpring(
-    useTransform(y, [-80, 80], [8, -8]),
-    { stiffness: 140, damping: 12 }
-  );
-  const ryBase: MotionValue<number> = useSpring(
-    useTransform(x, [-80, 80], [-8, 8]),
-    { stiffness: 140, damping: 12 }
-  );
-
-  const rxDeg: MotionValue<string> = useTransform(rxBase, (v) => `${v}deg`);
-  const ryDeg: MotionValue<string> = useTransform(ryBase, (v) => `${v}deg`);
-
-  const handleMouseMove = (e: ReactMouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    x.set(e.clientX - (rect.left + rect.width / 2));
-    y.set(e.clientY - (rect.top + rect.height / 2));
-  };
-
   return (
-    <div className="relative min-h-[92vh] w-full overflow-hidden bg-[#f7fafc] text-[#0b1220]">
-      {/* Soft pastel background */}
+<section
+  className="
+    relative w-full overflow-hidden bg-black
+    mt-16                        // 헤더 높이만큼 아래로 내림 (h-16 = 64px)
+    h-[calc(100dvh-64px)]        // 보이는 화면에서 헤더 높이만큼 뺀 높이
+    md:h-[calc(100vh-64px)]      // 데스크탑 폴백
+  "
+>
+      {/* 폴백: 일부 브라우저에서 svh 미지원 시 */}
       <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(80% 60% at 50% 0%, rgba(125,211,252,0.45), transparent), radial-gradient(60% 50% at 80% 30%, rgba(134,239,172,0.38), transparent)",
-        }}
-      />
-      <LightBlobs />
-      <SubtleGrid />
-      <div
-        className="pointer-events-none absolute inset-0 opacity-15 mix-blend-multiply"
-        style={{
-          backgroundImage:
-            "url('data:image/svg+xml;utf8,<?xml version=\"1.0\"?><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"120\" height=\"120\" viewBox=\"0 0 120 120\"><filter id=\"n\"><feTurbulence type=\"fractalNoise\" baseFrequency=\"0.65\" numOctaves=\"2\" stitchTiles=\"stitch\"/></filter><rect width=\"100%\" height=\"100%\" filter=\"url(%23n)\" opacity=\"0.35\"/></svg>')",
-        }}
+        className="absolute inset-0"
+        style={{ height: `calc(100vh - ${HEADER_H}px)` }}
+        aria-hidden
       />
 
-      {/* WebGL */}
-      <div className="absolute inset-0">
-        <Canvas camera={{ position: [0, 0, 4], fov: 60 }} gl={{ antialias: true }}>
-          <Scene />
-          <OrbitControls enablePan={false} enableZoom={false} autoRotate={false} />
-        </Canvas>
+      {/* 비디오 배경 */}
+      <video
+        className="absolute inset-0 h-full w-full object-cover [filter:contrast(1.1)_saturate(1.15)]"
+        src="/videos/main.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+      />
+
+      {/* 가독성 오버레이 */}
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.45),rgba(0,0,0,0.25)_30%,rgba(0,0,0,0.25)_70%,rgba(0,0,0,0.55))]" />
+        <div className="absolute inset-0 [background:radial-gradient(80%_60%_at_50%_40%,rgba(0,0,0,0.0),rgba(0,0,0,0.35))]" />
       </div>
 
-      {/* Content card */}
-      <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center px-6 pt-24 md:pt-28">
-        <motion.div
-          onMouseMove={handleMouseMove}
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => {
-            setHover(false);
-            x.set(0);
-            y.set(0);
-          }}
-          style={{ rotateX: rxDeg, rotateY: ryDeg }}
-          className="w-full max-w-3xl rounded-2xl border border-[rgba(15,23,42,0.08)] bg-white/90 p-8 shadow-[0_10px_40px_rgba(15,23,42,0.12)] backdrop-blur"
-        >
+      {/* 콘텐츠: 상단 고정 헤더 높이만큼 패딩을 줄 필요 없음(이미 높이에서 제외) */}
+      <div className="relative z-10 mx-auto flex h-full max-w-7xl items-center px-6">
+        <div className="max-w-4xl text-white">
+          {/* 라벨 */}
           <motion.div
-            animate={{ scale: hover ? 1.01 : 1 }}
-            transition={{ type: "spring", stiffness: 120, damping: 12 }}
-            className="space-y-5"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+            className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/15 px-4 py-1.5 text-sm tracking-wide"
+            style={{ backdropFilter: "blur(4px)" }}
           >
-            {/* 라벨: C 톤 */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-[rgba(34,211,238,0.35)] bg-[rgba(34,211,238,0.16)] px-3 py-1 text-xs tracking-wide text-[#0b1220]">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#22d3ee]" />
-              NEXT-GEN INVESTING
+            <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-300" />
+            NEXT-GEN INVESTING
+          </motion.div>
+
+          {/* 헤드라인 */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.55 }}
+            className="mt-6 text-4xl font-bold leading-tight sm:text-6xl lg:text-7xl"
+            style={{ textShadow: "0 20px 45px rgba(0,0,0,.5), 0 6px 16px rgba(0,0,0,.4), 0 1px 0 rgba(0,0,0,.7)" }}
+          >
+            데이터로 신뢰를 설계하는 <br className="hidden sm:block" />
+            당신의 투자 파트너
+          </motion.h1>
+
+          {/* 브랜드 라인 */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: "easeOut", delay: 0.9 }}
+            className="mt-6 flex items-center gap-4"
+            style={{ textShadow: "0 10px 28px rgba(0,0,0,.45), 0 3px 10px rgba(0,0,0,.35)" }}
+          >
+            <div className="grid h-12 w-12 place-items-center rounded-full border border-white/50 bg-white/20">
+              <span className="text-xl font-bold">O</span>
             </div>
-
-            {/* 헤드라인: A+C 합성 */}
-            <h1 className="text-pretty text-3xl font-semibold leading-tight sm:text-5xl">
-              신뢰로 완성하는, 데이터 기반 코인 투자
-            </h1>
-
-            {/* 서브/본문: A의 담백함 + C의 기술감 */}
-            <p className="text-balance text-sm/6 text-[rgba(11,18,32,0.72)] sm:text-base/7">
-              AI 시그널과 온체인 인텔리전스로 한발 앞서 시장을 읽습니다.
-              정교한 분석과 체계적 리스크 관리로, 변동성 속에서도 흔들리지 않는 결정을 돕습니다.
-            </p>
-
-            {/* CTA */}
-            <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:gap-4">
-              <motion.a
-                whileHover={{ y: -2 }}
-                whileTap={{ y: 0 }}
-                href="#contact"
-                className="inline-flex items-center justify-center rounded-xl bg-[#34d399] px-5 py-3 text-sm font-semibold text-[#0b1220] shadow-md"
-              >
-                바로 체험하기
-              </motion.a>
-              <motion.a
-                whileHover={{ y: -2 }}
-                whileTap={{ y: 0 }}
-                href="#whitepaper"
-                className="inline-flex items-center justify-center rounded-xl border border-[rgba(15,23,42,0.08)] bg-white/90 px-5 py-3 text-sm font-semibold"
-              >
-                인사이트 샘플 받기
-              </motion.a>
+            <div className="leading-tight">
+              <div className="text-3xl font-semibold tracking-wide">ogto</div>
+              <div className="text-sm opacity-90">오지토</div>
             </div>
           </motion.div>
-        </motion.div>
 
-        {/* KPI strip (밝은 surface) */}
-        <div className="mt-10 grid w-full max-w-4xl grid-cols-2 gap-3 sm:grid-cols-4">
-          {["온체인", "뉴스", "퀀트", "커뮤니티"].map((k, i) => (
-            <div
-              key={k}
-              className="rounded-xl border border-[rgba(15,23,42,0.08)] bg-white/80 px-4 py-3 text-center text-xs"
+          {/* 보조 문구 */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 1.2 }}
+            className="mt-5 max-w-2xl text-base text-white/90 sm:text-lg lg:text-xl"
+            style={{ textShadow: "0 12px 30px rgba(0,0,0,.5), 0 3px 8px rgba(0,0,0,.4)" }}
+          >
+            우리는 시장의 신호를 가장 먼저 포착하고, 데이터와 인텔리전스로 불확실성을 관리합니다.
+            전문적이고 체계적인 분석을 바탕으로, 변동성 속에서도 흔들리지 않는 투자 경험을 제공합니다.
+          </motion.p>
+
+          {/* CTA */}
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:gap-6">
+            <motion.a
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.5 }}
+              whileHover={{ y: -2 }}
+              whileTap={{ y: 0 }}
+              href="#contact"
+              className="inline-flex items-center justify-center rounded-xl bg-emerald-400/95 px-6 py-4 text-base font-semibold text-[#0b1220] shadow-[0_12px_32px_rgba(0,0,0,.3)] sm:text-lg"
             >
-              <div className="font-medium">{k}</div>
-              <div className="mt-1 text-lg font-semibold">
-                {["12,457", "3.2ms", "+87%", "24/7"][i]}
-              </div>
-            </div>
-          ))}
+              상담 신청
+            </motion.a>
+            <motion.a
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.65 }}
+              whileHover={{ y: -2 }}
+              whileTap={{ y: 0 }}
+              href="#"
+              className="inline-flex items-center justify-center rounded-xl border border-white/60 bg-white/15 px-6 py-4 text-base font-semibold text-white backdrop-blur sm:text-lg"
+            >
+              투자 전략 보기
+            </motion.a>
+          </div>
         </div>
       </div>
 
-      {/* bottom vignette */}
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-44"
-        style={{ background: "linear-gradient(to top, rgba(255,255,255,0.95), transparent)" }}
-      />
-      <div className="absolute bottom-10 left-1/2 z-10 -translate-x-1/2">
-        <div className="flex items-center gap-3 text-sm text-[#0b1220]/60">
-          <span className="text-base font-medium">Scroll</span>
-          <span className="relative inline-block h-8 w-4 rounded-full border-2 border-[#0b1220]/30">
-            <span className="absolute left-1/2 top-1.5 h-2 w-2 -translate-x-1/2 animate-bounce rounded-full bg-[#0b1220]/50" />
+      {/* 스크롤 인디케이터 (원한다면 유지) */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2.0, duration: 0.8 }}
+        className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2"
+      >
+        <div className="flex items-center gap-3 text-white/85" style={{ textShadow: "0 6px 20px rgba(0,0,0,.5)" }}>
+          <span className="text-lg font-medium">Scroll</span>
+          <span className="relative inline-block h-10 w-5 rounded-full border-2 border-white/70">
+            <span className="absolute left-1/2 top-2 h-2.5 w-2.5 -translate-x-1/2 animate-bounce rounded-full bg-white/90" />
           </span>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </section>
   );
 }
