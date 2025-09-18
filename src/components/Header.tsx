@@ -21,7 +21,8 @@ export default function Header() {
   const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const hoverTimer = useRef<NodeJS.Timeout | null>(null);
+  // ✅ 타이머 타입을 cross-env 안전하게
+  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // spotlight
   const [spot, setSpot] = useState({ x: 0, y: 0 });
@@ -36,6 +37,7 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // 바깥 클릭 닫기
   useEffect(() => {
     if (!open) return;
     const onDown = (e: MouseEvent) => {
@@ -46,6 +48,7 @@ export default function Header() {
     return () => window.removeEventListener("mousedown", onDown);
   }, [open]);
 
+  // ESC 닫기
   useEffect(() => {
     if (!open && !mobileOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -58,11 +61,22 @@ export default function Header() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open, mobileOpen]);
 
+  // ✅ 호버 인텐트 (항상 cleanup 함수 반환)
   useEffect(() => {
-    if (hoverTimer.current) clearTimeout(hoverTimer.current);
-    if (hovering) hoverTimer.current = setTimeout(() => setOpen(true), 80);
-    else hoverTimer.current = setTimeout(() => setOpen(false), 180);
-    return () => hoverTimer.current && clearTimeout(hoverTimer.current);
+    if (hoverTimer.current) {
+      clearTimeout(hoverTimer.current);
+      hoverTimer.current = null;
+    }
+    hoverTimer.current = setTimeout(() => {
+      setOpen(hovering);
+    }, hovering ? 80 : 180);
+
+    return () => {
+      if (hoverTimer.current) {
+        clearTimeout(hoverTimer.current);
+        hoverTimer.current = null;
+      }
+    };
   }, [hovering]);
 
   const measureAnchor = () => {
@@ -123,12 +137,8 @@ export default function Header() {
       </div>
 
       {/* Desktop connector + dropdown */}
-      <div
-        className="pointer-events-none absolute inset-x-0 top-16 hidden sm:block"
-        onMouseEnter={() => setHovering(true)}
-        onMouseLeave={() => setHovering(false)}
-      >
-        {/* connector bar (thicker + glow) */}
+      <div className="absolute inset-x-0 top-16 hidden sm:block">
+        {/* connector bar */}
         <AnimatePresence>
           {open && anchorRect && (
             <motion.div key="connector" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="relative mx-auto max-w-7xl">
@@ -154,6 +164,9 @@ export default function Header() {
               <div className="mx-auto max-w-7xl px-4 sm:px-6">
                 <motion.div
                   ref={panelRef}
+                  // ✅ 패널 자체에 호버 유지 핸들러 부착
+                  onMouseEnter={() => setHovering(true)}
+                  onMouseLeave={() => setHovering(false)}
                   onMouseMove={(e) => {
                     const r = (e.currentTarget as HTMLDivElement).getBoundingClientRect();
                     setSpot({ x: e.clientX - r.left, y: e.clientY - r.top });
@@ -161,14 +174,11 @@ export default function Header() {
                   layout
                   className="pointer-events-auto mt-3 overflow-hidden rounded-2xl border border-black/10 bg-white/95 shadow-[0_28px_80px_rgba(8,15,40,0.16)] backdrop-blur"
                   style={{
-                    // spotlight
                     backgroundImage: `radial-gradient(180px 160px at ${spot.x}px ${spot.y}px, rgba(16,185,129,0.12), transparent 60%)`,
                   }}
                 >
-                  {/* top highlight bar */}
                   <motion.div layoutId="menu-highlight" className="h-[4px] w-full bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-400" />
 
-                  {/* bigger grid tiles */}
                   <motion.div
                     className="grid gap-3 p-3 sm:grid-cols-2 lg:grid-cols-4"
                     initial="hidden"
@@ -181,10 +191,7 @@ export default function Header() {
                     {MENU.map((m) => (
                       <motion.div
                         key={m.href}
-                        variants={{
-                          hidden: { opacity: 0, y: 8 },
-                          show:   { opacity: 1, y: 0 },
-                        }}
+                        variants={{ hidden: { opacity: 0, y: 8 }, show: { opacity: 1, y: 0 } }}
                       >
                         <Link
                           href={m.href}
@@ -201,18 +208,11 @@ export default function Header() {
                               {m.icon ?? "•"}
                             </div>
                             <div className="min-w-0">
-                              <div className="truncate text-[16px] font-semibold text-[#0b1220]">
-                                {m.title}
-                              </div>
-                              {m.desc && (
-                                <div className="line-clamp-2 text-[13px] text-black/60">
-                                  {m.desc}
-                                </div>
-                              )}
+                              <div className="truncate text-[16px] font-semibold text-[#0b1220]">{m.title}</div>
+                              {m.desc && <div className="line-clamp-2 text-[13px] text-black/60">{m.desc}</div>}
                             </div>
                           </div>
 
-                          {/* subtle progress underline on hover */}
                           <div className="relative mt-2 h-[3px] w-full overflow-hidden rounded-full bg-black/5">
                             <span className="absolute inset-y-0 left-0 w-0 rounded-full bg-gradient-to-r from-emerald-400 to-cyan-400 transition-all duration-300 group-hover:w-full" />
                           </div>
@@ -227,7 +227,7 @@ export default function Header() {
         </AnimatePresence>
       </div>
 
-      {/* Mobile full-screen panel (그대로) */}
+      {/* Mobile drawer */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div key="mobile" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="sm:hidden">
