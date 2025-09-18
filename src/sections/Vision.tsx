@@ -120,10 +120,16 @@ function InstancedField({ geometry, count, mouse }: InstancedProps) {
   // 인스턴스 컬러 적용
   useEffect(() => {
     if (!mesh.current) return;
+
     mesh.current.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+
     const colorAttr = new THREE.InstancedBufferAttribute(colors, 3);
-    mesh.current.instanceColor = colorAttr as any;
-    mesh.current.instanceColor.needsUpdate = true;
+    mesh.current.instanceColor = colorAttr;
+
+    const instColor = mesh.current.instanceColor;
+    if (instColor) {
+      instColor.needsUpdate = true;
+    }
   }, [colors]);
 
   // 업데이트 스로틀
