@@ -57,7 +57,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.55 }}
-            className="mt-6 text-4xl font-bold leading-tight sm:text-6xl lg:text-7xl"
+            className="mt-6 text-3xl font-bold leading-tight sm:text-6xl lg:text-7xl"
             style={{ textShadow: "0 20px 45px rgba(0,0,0,.5), 0 6px 16px rgba(0,0,0,.4), 0 1px 0 rgba(0,0,0,.7)" }}
           >
             데이터로 신뢰를 <br /> 설계하는 <br />
@@ -130,9 +130,9 @@ export default function Hero() {
       >
         <div className="flex items-center gap-3 text-white/85" style={{ textShadow: "0 6px 20px rgba(0,0,0,.5)" }}>
           <span className="text-lg font-medium">Scroll</span>
-          <span className="relative inline-block h-10 w-5 rounded-full border-2 border-white/70">
-            <span className="absolute left-1/2 top-2 h-2.5 w-2.5 -translate-x-1/2 animate-bounce rounded-full bg-white/90" />
-          </span>
+<span className="relative inline-block h-7 w-3.5 rounded-full border-2 border-white/70">
+  <span className="absolute left-1/2 top-1.5 h-2 w-2 -translate-x-1/2 animate-bounce rounded-full bg-white/90" />
+</span>
         </div>
       </motion.div>
     </section>
