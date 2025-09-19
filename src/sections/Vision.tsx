@@ -297,7 +297,7 @@ export default function Vision() {
         >
           “깊이 있는 시장 분석과 최신 기술 트렌드를 바탕으로 자산을 안전하게 관리하며,
           <span className="text-white"> 리스크를 최소화하면서도</span> 높은 성과를 지향한다”는 원칙을 인용해
-          ogto의 표준으로 재정의했습니다. 신호와 노이즈를 분리하고, 데이터가 말하는 근거로 전략을 설계합니다.
+          BUNNY STOCK의 표준으로 재정의했습니다. 신호와 노이즈를 분리하고, 데이터가 말하는 근거로 전략을 설계합니다.
         </motion.p>
 
         <motion.p

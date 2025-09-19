@@ -106,7 +106,7 @@ export default function Header() {
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2">
           <div className="grid h-8 w-8 place-items-center rounded-full bg-emerald-400 font-bold text-[#0b1220]">N</div>
-          <span className="text-[15px] font-semibold tracking-tight text-[#0b1220]">ogto Invest</span>
+          <span className="text-[15px] font-semibold tracking-tight text-[#0b1220]">BUNNY STOCK</span>
         </Link>
 
         <div className="flex items-center gap-2">

@@ -117,7 +117,7 @@ export default function Youtube({
       <div className="relative mx-auto max-w-6xl px-6">
         {/* 헤더 */}
         <div className="mb-12 flex flex-col items-center gap-3 text-center">
-          <div className="text-[11px] tracking-[0.18em] text-black/45">OGTO MEDIA</div>
+          <div className="text-[11px] tracking-[0.18em] text-black/45">BUNNY STOCK MEDIA</div>
           <h2 className="text-3xl font-bold text-black sm:text-4xl">{title}</h2>
           <p className="max-w-2xl text-sm text-black/60 sm:text-base">{subtitle}</p>
 

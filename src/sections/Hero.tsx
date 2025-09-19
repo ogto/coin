@@ -73,11 +73,11 @@ export default function Hero() {
             style={{ textShadow: "0 10px 28px rgba(0,0,0,.45), 0 3px 10px rgba(0,0,0,.35)" }}
           >
             <div className="grid h-12 w-12 place-items-center rounded-full border border-white/50 bg-white/20">
-              <span className="text-xl font-bold">O</span>
+              <span className="text-xl font-bold">BS</span>
             </div>
             <div className="leading-tight">
-              <div className="text-3xl font-semibold tracking-wide">ogto</div>
-              <div className="text-sm opacity-90">오지토</div>
+              <div className="text-3xl font-semibold tracking-wide">BUNNY STOCK</div>
+              <div className="text-sm opacity-90">버니스탁</div>
             </div>
           </motion.div>
 
@@ -106,7 +106,7 @@ export default function Hero() {
             >
               상담 신청
             </motion.a>
-            <motion.a
+            {/* <motion.a
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 1.65 }}
@@ -116,7 +116,7 @@ export default function Hero() {
               className="inline-flex items-center justify-center rounded-xl border border-white/60 bg-white/15 px-6 py-4 text-base font-semibold text-white backdrop-blur sm:text-lg"
             >
               투자 전략 보기
-            </motion.a>
+            </motion.a> */}
           </div>
         </div>
       </div>

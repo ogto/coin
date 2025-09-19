@@ -19,10 +19,10 @@ export default function Footer() {
             <div className="flex items-center gap-3">
               {/* 심플 로고 */}
               <div className="grid h-10 w-10 place-items-center rounded-xl bg-black text-white">
-                <span className="text-sm font-bold">og</span>
+                <span className="text-sm font-bold">BS</span>
               </div>
               <div>
-                <div className="text-lg font-semibold text-black">ogto</div>
+                <div className="text-lg font-semibold text-black">BUNNY STOCK</div>
                 <div className="text-xs text-black/50">데이터 기반 투자 인텔리전스</div>
               </div>
             </div>
@@ -97,11 +97,11 @@ export default function Footer() {
         {/* 회사 정보 + 카피라이트 */}
         <div className="grid gap-4 py-8 md:grid-cols-2">
           <div className="text-xs leading-6 text-black/55">
-            <div>상호: (주)오그토 | 대표: 홍길동 | 사업자등록번호: 000-00-00000</div>
+            <div>상호: (주)Bunny Stock | 대표: 홍길동 | 사업자등록번호: 000-00-00000</div>
             <div>주소: 서울특별시 마포구 00로 00, 4층 | TEL. 02-0000-0000</div>
           </div>
           <div className="flex items-end justify-start md:justify-end">
-            <p className="text-xs text-black/45">© {new Date().getFullYear()} ogto. All rights reserved.</p>
+            <p className="text-xs text-black/45">© {new Date().getFullYear()} BUNNY STOCK. All rights reserved.</p>
           </div>
         </div>
       </div>
