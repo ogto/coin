@@ -101,7 +101,7 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 1.5 }}
               whileHover={{ y: -2 }}
               whileTap={{ y: 0 }}
-              href="#contact"
+              href="#consult"
               className="inline-flex items-center justify-center rounded-xl bg-emerald-400/95 px-6 py-4 text-base font-semibold text-[#0b1220] shadow-[0_12px_32px_rgba(0,0,0,.3)] sm:text-lg"
             >
               상담 신청
