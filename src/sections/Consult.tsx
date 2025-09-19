@@ -1,20 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { db } from "@/lib/firebase";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 type PostItem = {
   id: string | number;
-  title: string; // 예: "J***님의 상담신청이 접수되었습니다."
-  date: string;  // 예: "2025.07.22"
-  href?: string; // 선택
+  title: string;
+  date: string;  // "YYYY.MM.DD"
+  href?: string;
 };
 
-export default function Consult({
-  posts = [],
-}: {
-  posts?: PostItem[];
-}) {
+export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
+  // ----------------- 상태 -----------------
+  const [localPosts, setLocalPosts] = useState<PostItem[]>(posts);
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -22,7 +22,90 @@ export default function Consult({
     message: "",
     agree: false,
   });
+  const [submitting, setSubmitting] = useState(false);
 
+  // ----------------- 유틸 -----------------
+  const isEmail = (v: string) => /\S+@\S+\.\S+/.test(v);
+  const normPhone = (v: string) => v.replace(/[^\d]/g, "");
+  const maskName = (name: string) => {
+    const n = name.trim();
+    if (n.length <= 1) return n;
+    if (n.length === 2) return n[0] + "*";
+    return n[0] + "*".repeat(n.length - 2) + n[n.length - 1];
+  };
+  const fmtDate = (d: Date) =>
+    `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
+
+  // ----------------- 초기 누적 조회 -----------------
+  useEffect(() => {
+    const ctl = new AbortController();
+    (async () => {
+      try {
+        const res = await fetch("/api/consults?limit=20", {
+          cache: "no-store",
+          signal: ctl.signal,
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (Array.isArray(data.items)) setLocalPosts(data.items);
+      } catch {
+        // 무시 (네트워크 오류 등)
+      }
+    })();
+    return () => ctl.abort();
+  }, []);
+
+  // ----------------- 제출 -----------------
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (submitting) return;
+
+    // 검증
+    if (!form.name.trim()) return alert("이름을 입력하세요.");
+    if (normPhone(form.phone).length < 9) return alert("전화번호를 확인하세요.");
+    if (!isEmail(form.email)) return alert("이메일 형식을 확인하세요.");
+    if (!form.message.trim()) return alert("문의 내용을 입력하세요.");
+    if (!form.agree) return alert("개인정보 수집·이용에 동의가 필요합니다.");
+
+    setSubmitting(true);
+    try {
+      // Firestore 쓰기 (읽기는 서버 API가 담당)
+      const ref = await addDoc(collection(db, "consults"), {
+        name: form.name.trim(),
+        phone: normPhone(form.phone),
+        email: form.email.trim(),
+        message: form.message.trim(),
+        agree: true,
+        createdAt: serverTimestamp(),
+        ua: typeof navigator !== "undefined" ? navigator.userAgent : "",
+        referer: typeof document !== "undefined" ? document.referrer : "",
+        path: typeof location !== "undefined" ? location.pathname : "",
+      });
+
+      // 화면 즉시 반영 (중복 방지)
+      const newItem: PostItem = {
+        id: ref.id,
+        title: `${maskName(form.name)}님의 상담신청이 접수되었습니다.`,
+        date: fmtDate(new Date()),
+      };
+      setLocalPosts((prev) => (prev.some((p) => p.id === newItem.id) ? prev : [newItem, ...prev]));
+
+      alert("접수되었습니다. 담당자가 확인 후 연락드립니다.");
+      setForm({ name: "", phone: "", email: "", message: "", agree: false });
+    } catch (err: any) {
+      console.log("[firestore error]", {
+        name: err?.name,
+        code: err?.code,
+        message: err?.message,
+        customData: err?.customData,
+      });
+      alert("접수 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  // ----------------- UI -----------------
   return (
     <section className="relative overflow-hidden bg-white py-24">
       {/* 부드러운 배경 */}
@@ -45,17 +128,15 @@ export default function Consult({
         {/* 머리말 */}
         <div className="mb-12 text-center">
           <div className="text-[11px] tracking-[0.18em] text-black/45">OGTO SERVICE</div>
-          <h2 className="mt-1 text-3xl font-bold text-black sm:text-4xl">
-            비대면으로 간편하게 상담을 신청하세요
-          </h2>
+          <h2 className="mt-1 text-3xl font-bold text-black sm:text-4xl">비대면으로 간편하게 상담을 신청하세요</h2>
           <p className="mx-auto mt-2 max-w-2xl text-sm text-black/60 sm:text-base">
-            문의를 남겨주시면 담당자가 확인 후 연락드립니다. (기능 연결은 내일 진행)
+            문의를 남겨주시면 담당자가 확인 후 연락드립니다.
           </p>
         </div>
 
         {/* 좌우 2컬럼 */}
         <div className="grid gap-8 lg:grid-cols-2">
-          {/* LEFT: Form (UI만) */}
+          {/* LEFT: Form */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -72,14 +153,7 @@ export default function Consult({
               </h3>
             </div>
 
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                console.log("[UI Only] submit payload:", form);
-                alert("지금은 화면만 구현 상태입니다. 내일 DB 연결 예정 ⚡️");
-              }}
-              className="space-y-4"
-            >
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="space-y-1">
                   <label className="text-xs text-black/60">이름</label>
@@ -109,6 +183,7 @@ export default function Consult({
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   placeholder="you@example.com"
                   inputMode="email"
+                  autoComplete="email"
                   className="w-full rounded-lg border border-black/10 bg-white px-3 py-3 text-sm outline-none ring-emerald-500/20 focus:ring"
                 />
               </div>
@@ -134,19 +209,20 @@ export default function Consult({
                   />
                   개인정보 수집·이용에 동의합니다.
                 </label>
-                <span className="text-xs text-black/40">* 실제 전송은 비활성</span>
+                <span className="text-xs text-black/40">*개인정보는 안전하게 보관됩니다.</span>
               </div>
 
               <button
                 type="submit"
-                className="mt-1 inline-flex w-full items-center justify-center rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-600"
+                disabled={submitting}
+                className="mt-1 inline-flex w-full items-center justify-center rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-600 disabled:opacity-60"
               >
-                문의 신청 보내기
+                {submitting ? "전송 중..." : "문의 신청 보내기"}
               </button>
             </form>
           </motion.div>
 
-          {/* RIGHT: 접수 현황 (UI) */}
+          {/* RIGHT: 누적 현황 (서버 API로 읽고, 제출 시 즉시 prepend) */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -157,23 +233,16 @@ export default function Consult({
             <div className="mb-5">
               <div className="text-xs tracking-wide text-black/50">크레딧·증거성</div>
               <h3 className="text-xl font-semibold text-black">상담신청 현황</h3>
-              <p className="mt-1 text-xs text-black/50">
-                최근 접수된 문의 내역입니다. 개인정보 보호를 위해 일부 정보는 마스킹됩니다.
-              </p>
+              <p className="mt-1 text-xs text-black/50">최근 접수된 문의 내역입니다. 개인정보 보호를 위해 일부 정보는 마스킹됩니다.</p>
             </div>
 
             <ul className="divide-y divide-black/10">
-              {posts.length === 0 ? (
-                <li className="py-10 text-center text-sm text-black/45">
-                  아직 표시할 내역이 없습니다.
-                </li>
+              {localPosts.length === 0 ? (
+                <li className="py-10 text-center text-sm text-black/45">아직 표시할 내역이 없습니다.</li>
               ) : (
-                posts.map((p) => (
+                localPosts.map((p) => (
                   <li key={p.id} className="flex items-center justify-between gap-4 py-3">
-                    <a
-                      href={p.href ?? "#"}
-                      className="line-clamp-1 text-sm text-black/80 hover:text-emerald-600"
-                    >
+                    <a href={p.href ?? "#"} className="line-clamp-1 text-sm text-black/80 hover:text-emerald-600">
                       {p.title}
                     </a>
                     <span className="whitespace-nowrap text-xs text-black/40">{p.date}</span>
@@ -183,10 +252,7 @@ export default function Consult({
             </ul>
 
             <div className="mt-4 text-right">
-              <a
-                href="#"
-                className="inline-flex items-center gap-1 text-sm font-medium text-emerald-600 hover:underline"
-              >
+              <a href="#" className="inline-flex items-center gap-1 text-sm font-medium text-emerald-600 hover:underline">
                 더보기
                 <svg width="14" height="14" viewBox="0 0 24 24">
                   <path fill="currentColor" d="M10 17l5-5-5-5v10z" />
