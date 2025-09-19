@@ -6,14 +6,14 @@ const HEADER_H = 64; // px (h-16)
 
 export default function Hero() {
   return (
-<section
-  className="
-    relative w-full overflow-hidden bg-black
-    mt-16                        // 헤더 높이만큼 아래로 내림 (h-16 = 64px)
-    h-[calc(100dvh-64px)]        // 보이는 화면에서 헤더 높이만큼 뺀 높이
-    md:h-[calc(100vh-64px)]      // 데스크탑 폴백
-  "
->
+    <section
+      className="
+        relative w-full overflow-hidden bg-black
+        mt-16                        // 헤더 높이만큼 아래로 내림 (h-16 = 64px)
+        h-[calc(100dvh-64px)]        // 보이는 화면에서 헤더 높이만큼 뺀 높이
+        md:h-[calc(100vh-64px)]      // 데스크탑 폴백
+      "
+    >
       {/* 폴백: 일부 브라우저에서 svh 미지원 시 */}
       <div
         className="absolute inset-0"
@@ -60,7 +60,7 @@ export default function Hero() {
             className="mt-6 text-4xl font-bold leading-tight sm:text-6xl lg:text-7xl"
             style={{ textShadow: "0 20px 45px rgba(0,0,0,.5), 0 6px 16px rgba(0,0,0,.4), 0 1px 0 rgba(0,0,0,.7)" }}
           >
-            데이터로 신뢰를 설계하는 <br className="hidden sm:block" />
+            데이터로 신뢰를 <br /> 설계하는 <br />
             당신의 투자 파트너
           </motion.h1>
 

@@ -1,7 +1,8 @@
-// components/Footer.tsx
+import Image from "next/image";
+
 export default function Footer() {
   return (
-    <footer className="relative mt-24 border-t border-black/10 bg-[#f7fafc]">
+    <footer className="relative mt-24 border-t border-white/10 bg-[#0b1220]">
       {/* 은은한 배경 글로우 */}
       <div
         className="pointer-events-none absolute inset-0"
@@ -16,17 +17,21 @@ export default function Footer() {
         <div className="grid gap-10 py-12 md:grid-cols-4">
           {/* Brand */}
           <div className="md:col-span-2">
-            <div className="flex items-center gap-3">
-              {/* 심플 로고 */}
-              <div className="grid h-10 w-10 place-items-center rounded-xl bg-black text-white">
-                <span className="text-sm font-bold">BS</span>
-              </div>
-              <div>
-                <div className="text-lg font-semibold text-black">BUNNY STOCK</div>
-                <div className="text-xs text-black/50">데이터 기반 투자 인텔리전스</div>
+            <div className="flex flex-col items-start gap-3">
+              <Image
+                src="/images/logo.png"
+                alt="BUNNY STOCK"
+                width={128}
+                height={128}
+                className="rounded-xl"
+                priority
+              />
+              <div className="text-sm text-white/70">
+                데이터 기반 투자 인텔리전스
               </div>
             </div>
-            <p className="mt-4 max-w-lg text-sm leading-6 text-black/60">
+
+            <p className="mt-4 max-w-lg text-sm leading-6 text-white/60">
               신뢰할 수 있는 데이터와 절제된 인터랙션으로, 변동성 속에서도 흔들리지 않는 결정을 돕습니다.
             </p>
 
@@ -35,7 +40,7 @@ export default function Footer() {
               <a
                 href="#"
                 aria-label="YouTube"
-                className="rounded-full border border-black/10 bg-white p-2 text-black/70 transition hover:-translate-y-0.5 hover:shadow-md"
+                className="rounded-full border border-white/20 bg-[#0b1220] p-2 text-white/70 transition hover:-translate-y-0.5 hover:shadow-md hover:text-white"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1C4.5 20.5 12 20.5 12 20.5s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.8 15.5v-7L16 12l-6.2 3.5z"/>
@@ -44,7 +49,7 @@ export default function Footer() {
               <a
                 href="#"
                 aria-label="X"
-                className="rounded-full border border-black/10 bg-white p-2 text-black/70 transition hover:-translate-y-0.5 hover:shadow-md"
+                className="rounded-full border border-white/20 bg-[#0b1220] p-2 text-white/70 transition hover:-translate-y-0.5 hover:shadow-md hover:text-white"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M18.9 2H22l-7 8.1L23.5 22H17l-5-6.5L6 22H1.9l7.6-8.8L.8 2H7l4.5 6L18.9 2zM6.9 3.7H4.7l12.6 16.7h2.2L6.9 3.7z"/>
@@ -53,7 +58,7 @@ export default function Footer() {
               <a
                 href="#"
                 aria-label="GitHub"
-                className="rounded-full border border-black/10 bg-white p-2 text-black/70 transition hover:-translate-y-0.5 hover:shadow-md"
+                className="rounded-full border border-white/20 bg-[#0b1220] p-2 text-white/70 transition hover:-translate-y-0.5 hover:shadow-md hover:text-white"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 .5A12 12 0 0 0 0 12.7c0 5.4 3.4 10 8.2 11.6.6.1.8-.3.8-.6v-2c-3.3.7-4-1.4-4-1.4-.6-1.4-1.5-1.8-1.5-1.8-1.2-.8 0-.8.1-.8 1.3.1 2 1.3 2 1.3 1.2 2 3.1 1.4 3.9 1.1.1-.9.5-1.4.8-1.8-2.7-.3-5.6-1.4-5.6-6.3 0-1.4.5-2.6 1.3-3.5-.1-.3-.6-1.6.1-3.3 0 0 1-.3 3.4 1.3 1-.3 2-.4 3-.4s2 .1 3 .4c2.4-1.6 3.4-1.3 3.4-1.3.7 1.7.2 3 .1 3.3.8.9 1.3 2.1 1.3 3.5 0 4.9-2.9 6-5.6 6.3.5.4.9 1.2.9 2.4v3.6c0 .3.2.7.8.6A12 12 0 0 0 24 12.7 12 12 0 0 0 12 .5z"/>
@@ -65,43 +70,45 @@ export default function Footer() {
           {/* Links */}
           <div className="grid grid-cols-2 gap-8 md:col-span-2 md:grid-cols-3">
             <div>
-              <div className="mb-3 text-sm font-semibold text-black">회사</div>
-              <ul className="space-y-2 text-sm text-black/60">
-                <li><a className="hover:text-black" href="#">소개</a></li>
-                <li><a className="hover:text-black" href="#">채용</a></li>
-                <li><a className="hover:text-black" href="#">뉴스룸</a></li>
+              <div className="mb-3 text-sm font-semibold text-white">회사</div>
+              <ul className="space-y-2 text-sm text-white/60">
+                <li><a className="hover:text-white" href="#">소개</a></li>
+                <li><a className="hover:text-white" href="#">채용</a></li>
+                <li><a className="hover:text-white" href="#">뉴스룸</a></li>
               </ul>
             </div>
             <div>
-              <div className="mb-3 text-sm font-semibold text-black">고객지원</div>
-              <ul className="space-y-2 text-sm text-black/60">
-                <li><a className="hover:text-black" href="#contact">상담신청</a></li>
-                <li><a className="hover:text-black" href="#">자주 묻는 질문</a></li>
-                <li><a className="hover:text-black" href="#">가이드</a></li>
+              <div className="mb-3 text-sm font-semibold text-white">고객지원</div>
+              <ul className="space-y-2 text-sm text-white/60">
+                <li><a className="hover:text-white" href="#contact">상담신청</a></li>
+                <li><a className="hover:text-white" href="#">자주 묻는 질문</a></li>
+                <li><a className="hover:text-white" href="#">가이드</a></li>
               </ul>
             </div>
             <div>
-              <div className="mb-3 text-sm font-semibold text-black">정책</div>
-              <ul className="space-y-2 text-sm text-black/60">
-                <li><a className="hover:text-black" href="#">이용약관</a></li>
-                <li><a className="hover:text-black" href="#">개인정보처리방침</a></li>
-                <li><a className="hover:text-black" href="#">쿠키정책</a></li>
+              <div className="mb-3 text-sm font-semibold text-white">정책</div>
+              <ul className="space-y-2 text-sm text-white/60">
+                <li><a className="hover:text-white" href="#">이용약관</a></li>
+                <li><a className="hover:text-white" href="#">개인정보처리방침</a></li>
+                <li><a className="hover:text-white" href="#">쿠키정책</a></li>
               </ul>
             </div>
           </div>
         </div>
 
         {/* 구분선 */}
-        <div className="h-px w-full bg-black/10" />
+        <div className="h-px w-full bg-white/10" />
 
         {/* 회사 정보 + 카피라이트 */}
         <div className="grid gap-4 py-8 md:grid-cols-2">
-          <div className="text-xs leading-6 text-black/55">
+          <div className="text-xs leading-6 text-white/60">
             <div>상호: (주)Bunny Stock | 대표: 홍길동 | 사업자등록번호: 000-00-00000</div>
             <div>주소: 서울특별시 마포구 00로 00, 4층 | TEL. 02-0000-0000</div>
           </div>
           <div className="flex items-end justify-start md:justify-end">
-            <p className="text-xs text-black/45">© {new Date().getFullYear()} BUNNY STOCK. All rights reserved.</p>
+            <p className="text-xs text-white/50">
+              © {new Date().getFullYear()} BUNNY STOCK. All rights reserved.
+            </p>
           </div>
         </div>
       </div>
