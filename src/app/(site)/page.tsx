@@ -1,9 +1,9 @@
 "use client";
 
-import Header from "@/components/Header";
 import Hero from "@/sections/Hero";
 import Vision from "@/sections/Vision";
 import Youtube from "@/sections/Youtube";
+import InsightCarouselSection from "@/sections/InsightCarousel";
 import Consult from "@/sections/Consult";
 
 import { motion } from "framer-motion";
@@ -16,8 +16,9 @@ export default function Page() {
       <Hero />
       {/* VISION */}
       <Vision />
+      <InsightCarouselSection />
       {/* YOUTUBE */}
-      <Youtube
+      {/* <Youtube
         title="유튜브"
         subtitle="데이터로 해석한 시장 관점과 전략을 영상으로 제공합니다."
         channelLink="https://www.youtube.com/@한방닥터이글스" // 선택
@@ -27,7 +28,7 @@ export default function Page() {
           { url: "https://www.youtube.com/watch?v=8iBS7INut8Y", title: "불장에 대처하기" },
           // 필요 개수만큼 추가
         ]}
-      />
+      /> */}
       {/* CONSULT */}
       <Consult
         posts={[

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -26,16 +27,14 @@ export default function Footer() {
                 className="rounded-xl"
                 priority
               />
-              <div className="text-sm text-white/70">
-                데이터 기반 투자 인텔리전스
-              </div>
+              <div className="text-sm text-white/70">데이터 기반 투자 인텔리전스</div>
             </div>
 
             <p className="mt-4 max-w-lg text-sm leading-6 text-white/60">
               신뢰할 수 있는 데이터와 절제된 인터랙션으로, 변동성 속에서도 흔들리지 않는 결정을 돕습니다.
             </p>
 
-            {/* 소셜 */}
+            {/* 소셜 (외부 링크는 a 태그 유지) */}
             <div className="mt-4 flex items-center gap-3">
               <a
                 href="#"
@@ -72,25 +71,25 @@ export default function Footer() {
             <div>
               <div className="mb-3 text-sm font-semibold text-white">회사</div>
               <ul className="space-y-2 text-sm text-white/60">
-                <li><a className="hover:text-white" href="#">소개</a></li>
-                <li><a className="hover:text-white" href="#">채용</a></li>
-                <li><a className="hover:text-white" href="#">뉴스룸</a></li>
+                <li><Link className="hover:text-white" href="/about">소개</Link></li>
+                <li><Link className="hover:text-white" href="/careers">채용</Link></li>
+                <li><Link className="hover:text-white" href="/newsroom">뉴스룸</Link></li>
               </ul>
             </div>
             <div>
               <div className="mb-3 text-sm font-semibold text-white">고객지원</div>
               <ul className="space-y-2 text-sm text-white/60">
-                <li><a className="hover:text-white" href="#contact">상담신청</a></li>
-                <li><a className="hover:text-white" href="#">자주 묻는 질문</a></li>
-                <li><a className="hover:text-white" href="#">가이드</a></li>
+                <li><Link className="hover:text-white" href="/consult">상담신청</Link></li>
+                <li><Link className="hover:text-white" href="/faq">자주 묻는 질문</Link></li>
+                <li><Link className="hover:text-white" href="/guide">가이드</Link></li>
               </ul>
             </div>
             <div>
               <div className="mb-3 text-sm font-semibold text-white">정책</div>
               <ul className="space-y-2 text-sm text-white/60">
-                <li><a className="hover:text-white" href="#">이용약관</a></li>
-                <li><a className="hover:text-white" href="#">개인정보처리방침</a></li>
-                <li><a className="hover:text-white" href="#">쿠키정책</a></li>
+                <li><Link className="hover:text-white" href="/terms">이용약관</Link></li>
+                <li><Link className="hover:text-white" href="/privacy">개인정보처리방침</Link></li>
+                <li><Link className="hover:text-white" href="/legalNotice">법적고지</Link></li>
               </ul>
             </div>
           </div>
@@ -102,8 +101,8 @@ export default function Footer() {
         {/* 회사 정보 + 카피라이트 */}
         <div className="grid gap-4 py-8 md:grid-cols-2">
           <div className="text-xs leading-6 text-white/60">
-            <div>상호: (주)Bunny Stock | 대표: 홍길동 | 사업자등록번호: 000-00-00000</div>
-            <div>주소: 서울특별시 마포구 00로 00, 4층 | TEL. 02-0000-0000</div>
+            <div>상호: 버니스탁 주식회사 / Bunny Stock Co, Ltd. | 대표: 이서우 | 사업자등록번호: 673-870-2772</div>
+            <div>주소: 서울특별시 강남구 도곡로 7길, 5층 | Email. info@Bunnystock.io</div>
           </div>
           <div className="flex items-end justify-start md:justify-end">
             <p className="text-xs text-white/50">

@@ -9,6 +9,8 @@ import {
   Handshake,
   Info,
   Sparkles,
+  MapPin, // ⬅️ 추가
+  ExternalLink, // 버튼 아이콘 용도 (선택)
 } from "lucide-react";
 
 // ---- Framer Motion 공통 이징/바리언트
@@ -21,6 +23,14 @@ const fadeUp = {
 };
 
 const VIEWPORT = { once: true, amount: 0.2, margin: "-64px 0px -10% 0px" } as const;
+
+const ADDRESS = "서울 강남구 도곡로 7길 7, 5층";
+const GOOGLE_MAPS_EMBED =
+  "https://www.google.com/maps?q=" + encodeURIComponent(ADDRESS) + "&output=embed";
+const GOOGLE_MAPS_LINK =
+  "https://maps.google.com/?q=" + encodeURIComponent(ADDRESS);
+const NAVER_MAPS_LINK =
+  "https://map.naver.com/v5/search/" + encodeURIComponent(ADDRESS);
 
 export default function AboutPage() {
   return (
@@ -82,7 +92,7 @@ export default function AboutPage() {
             Bunny Stock은 다양한 금융시장에 대한 전문적인 투자정보 서비스와 체계적인 교육을 제공하는 유사투자자문업체입니다.
           </p>
           <ul className="mt-5 space-y-2 text-sm text-white/80">
-            <Bullet>설립: 20XX년</Bullet>
+            <Bullet>설립: 2022년</Bullet>
             <Bullet>사업영역: 유사투자자문업 (금융위원회 신고)</Bullet>
             <Bullet>주요서비스: 투자정보, 시장분석, 투자교육</Bullet>
           </ul>
@@ -109,7 +119,7 @@ export default function AboutPage() {
               <span className="font-semibold text-white">Bunny Stock</span>은 투자자가 스스로 판단할 수 있는 역량을
               기를 수 있도록 체계적인 교육과 정보를 제공합니다. 신뢰할 수 있는 파트너로서 여러분의 투자 여정에
               함께하겠습니다.”
-              <div className="mt-3 text-right text-xs text-white/60">Bunny Stock 대표이사 OOO</div>
+              <div className="mt-3 text-right text-xs text-white/60">Bunny Stock 대표이사 이서우</div>
             </div>
           </div>
         </motion.div>
@@ -153,8 +163,9 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 비전 & 미션 */}
+      {/* 비전 & 미션 + 오시는 길 */}
       <section className="relative mx-auto grid max-w-7xl grid-cols-1 gap-6 px-6 py-10 md:grid-cols-2">
+        {/* 비전 & 미션 */}
         <motion.div
           initial={fadeUp.initial}
           whileInView={fadeUp.whileInView}
@@ -182,6 +193,7 @@ export default function AboutPage() {
           </div>
         </motion.div>
 
+        {/* ⬇️ 여기: 기존 고지 박스 → 오시는 길로 교체 */}
         <motion.div
           initial={fadeUp.initial}
           whileInView={fadeUp.whileInView}
@@ -189,13 +201,49 @@ export default function AboutPage() {
           transition={{ ...fadeUp.transition, delay: 0.05 }}
           className="rounded-2xl border border-white/10 bg-white/[0.06] p-6"
         >
-          <div className="text-xs text-white/60">
-            * 유사투자자문업자 (금융위원회 신고번호: 제0000호)
+          <div className="mb-3 flex items-center gap-2 text-cyan-300">
+            <MapPin className="h-4.5 w-4.5" />
+            <span className="text-sm font-semibold">오시는 길</span>
+          </div>
+
+          <div className="mb-4 text-sm text-white/85">
+            {ADDRESS}
+          </div>
+
+          {/* 지도 임베드 */}
+          <div className="overflow-hidden rounded-xl border border-white/10">
+            <iframe
+              src={GOOGLE_MAPS_EMBED}
+              className="h-72 w-full"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              aria-label="Google Map"
+            />
+          </div>
+
+          {/* 외부 지도 열기 버튼 */}
+          <div className="mt-4 flex flex-wrap gap-2">
+            <a
+              href={GOOGLE_MAPS_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 rounded-lg border border-white/15 bg-white/[0.06] px-3 py-1.5 text-xs text-white/85 hover:bg-white/[0.1]"
+            >
+              Google 지도에서 열기 <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+            <a
+              href={NAVER_MAPS_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 rounded-lg border border-white/15 bg-white/[0.06] px-3 py-1.5 text-xs text-white/85 hover:bg-white/[0.1]"
+            >
+              Naver 지도에서 열기 <ExternalLink className="h-3.5 w-3.5" />
+            </a>
           </div>
         </motion.div>
       </section>
 
-      {/* 고지 문구 */}
+      {/* 고지 문구 (하단 안내문은 유지) */}
       <section className="mx-auto max-w-7xl px-6 pb-16">
         <div className="flex items-center gap-2 text-[12px] text-white/55">
           <ShieldCheck className="h-4 w-4 text-white/60" />
