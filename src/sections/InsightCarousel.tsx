@@ -180,7 +180,7 @@ export default function InsightCarouselSection() {
 
                     {/* 화살표: 카드 컨테이너 기준으로 양옆에 딱 붙임 */}
                     {active && (
-                      <div className="pointer-events-none absolute inset-y-0 left-0 right-0 flex items-center justify-between">
+                      <div className="pointer-events-none absolute inset-y-0 left-0 right-0 z-20 flex items-center justify-between">
                         <button
                           onClick={prev}
                           className="pointer-events-auto -ml-6 grid h-10 w-10 place-items-center rounded-full bg-white shadow ring-1 ring-black/10 hover:-translate-y-[1px] transition cursor-pointer"
