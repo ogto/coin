@@ -7,6 +7,8 @@ type State = { error?: string };
 
 export async function authenticate(_: State, formData: FormData): Promise<State | never> {
   const pwd = (formData.get("password") || "").toString().trim();
+  console.log(pwd);
+  console.log(process.env.ADMIN_PASSWORD);
   const ok = pwd.length > 0 && pwd === process.env.ADMIN_PASSWORD;
   if (!ok) return { error: "비밀번호가 올바르지 않습니다." };
 
