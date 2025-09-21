@@ -12,7 +12,6 @@ export default function Page() {
   return (
     <main className="flex flex-col bg-[#f7fafc] text-[#0b1220]">
 
-      <Header />
       {/* HERO */}
       <Hero />
       {/* VISION */}
