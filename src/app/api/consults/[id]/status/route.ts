@@ -1,38 +1,40 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebaseAdmin";
 
-const DEFAULT_COLLECTION = process.env.NEXT_PUBLIC_CONSULTS_COLLECTION || "consults";
+type Status = "new" | "in_progress" | "done";
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
-  const hostHeader = req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? "";
-  const hostname = hostHeader.split(":")[0];
+export async function PATCH(
+  req: NextRequest,
+  context: { params: { id: string } }
+) {
+  const { id } = context.params;
 
-  const isDev = process.env.NODE_ENV !== "production";
-  const isAdminHost =
-    hostname === "admin.bunnystock.io" ||
-    hostname === "localhost" ||
-    hostname === "127.0.0.1";
-
-  if (!isDev && !isAdminHost) {
-    return NextResponse.json({ error: "forbidden" }, { status: 403 });
-  }
-
-  const { searchParams } = new URL(req.url);
-  const collection = searchParams.get("collection") || DEFAULT_COLLECTION;
-
+  // body 파싱
+  let body: { status?: Status } = {};
   try {
-    const { status } = await req.json();
-    if (!["new", "in_progress", "done", "rejected"].includes(status)) {
-      return NextResponse.json({ error: "invalid_status" }, { status: 400 });
-    }
-
-    await adminDb.collection(collection).doc(params.id).update({
-      status,
-      updatedAt: new Date(),
-    });
-
-    return NextResponse.json({ ok: true });
+    body = await req.json();
   } catch {
-    return NextResponse.json({ error: "update_failed" }, { status: 500 });
+    // noop
   }
+  const status = body.status;
+
+  if (!id || !status) {
+    return NextResponse.json({ error: "bad_request" }, { status: 400 });
+  }
+
+  // (선택) 간단한 접근 가드 — 로컬은 통과, 프로덕션은 admin 경로/도메인만 허용
+  if (process.env.NODE_ENV !== "development") {
+    const referer = req.headers.get("referer") || "";
+    const allowed =
+      referer.includes("/admin") ||
+      (process.env.ADMIN_ORIGIN && referer.startsWith(process.env.ADMIN_ORIGIN));
+    if (!allowed) {
+      return NextResponse.json({ error: "forbidden" }, { status: 403 });
+    }
+  }
+
+  const col = process.env.FIREBASE_ADMIN_CONSULTS_COLLECTION ?? "consults";
+  await adminDb.collection(col).doc(id).update({ status });
+
+  return NextResponse.json({ ok: true });
 }
