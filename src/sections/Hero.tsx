@@ -92,31 +92,6 @@ export default function Hero() {
             전문적이고 체계적인 분석을 바탕으로, 변동성 속에서도 흔들리지 않는 투자 경험을 제공합니다.
           </motion.p>
 
-          {/* CTA */}
-          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:gap-6">
-            <motion.a
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 1.5 }}
-              whileHover={{ y: -2 }}
-              whileTap={{ y: 0 }}
-              href="#consult"
-              className="inline-flex items-center justify-center rounded-xl bg-emerald-400/95 px-6 py-4 text-base font-semibold text-[#0b1220] shadow-[0_12px_32px_rgba(0,0,0,.3)] sm:text-lg"
-            >
-              상담 신청
-            </motion.a>
-            {/* <motion.a
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 1.65 }}
-              whileHover={{ y: -2 }}
-              whileTap={{ y: 0 }}
-              href="#"
-              className="inline-flex items-center justify-center rounded-xl border border-white/60 bg-white/15 px-6 py-4 text-base font-semibold text-white backdrop-blur sm:text-lg"
-            >
-              투자 전략 보기
-            </motion.a> */}
-          </div>
         </div>
       </div>
 
