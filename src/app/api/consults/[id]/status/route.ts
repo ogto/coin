@@ -3,10 +3,7 @@ import { adminDb } from "@/lib/firebaseAdmin";
 
 type Status = "new" | "in_progress" | "done";
 
-export async function PATCH(
-  req: NextRequest,
-  context: { params: { id: string } }
-) {
+export async function PATCH(req: NextRequest, context: any) {
   const { id } = context.params;
 
   // body 파싱
