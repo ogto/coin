@@ -14,6 +14,7 @@ import {
   Check,
   Loader2,
 } from "lucide-react";
+import { StatusFilter } from "@/components/StatusFilter";
 
 // =============================================================================
 // 타입/상수
@@ -129,23 +130,13 @@ async function updateStatus(id: string, next: Status): Promise<void> {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="이름, 이메일, 전화번호, 메모 검색"
+              placeholder="이름, 이메일, 전화번호 검색"
               className="w-64 bg-transparent text-sm text-white placeholder-white/40 outline-none"
             />
           </div>
 
-          <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2">
-            <Filter className="h-4 w-4 text-white/50" />
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value as any)}
-              className="bg-transparent text-sm text-white outline-none"
-            >
-              <option value="">전체 상태</option>
-              <option value="new">신규</option>
-              <option value="in_progress">진행중</option>
-              <option value="done">완료</option>
-            </select>
+          <div className="relative">
+            <StatusFilter value={status} onChange={setStatus} />
           </div>
         </div>
       </div>
