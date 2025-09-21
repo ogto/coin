@@ -1,36 +1,43 @@
-export const runtime = "nodejs"; // Edge 금지
 import { NextResponse } from "next/server";
 import { adminDb } from "@/lib/firebaseAdmin";
 
-const mask = (name: string) => {
-  const n = (name || "").trim();
-  if (n.length <= 1) return n;
-  if (n.length === 2) return n[0] + "*";
-  return n[0] + "*".repeat(n.length - 2) + n[n.length - 1];
-};
-
-const fmt = (d: Date) =>
-  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
+const DEFAULT_COLLECTION = process.env.NEXT_PUBLIC_CONSULTS_COLLECTION || "consults";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const limitN = Number(searchParams.get("limit") || 20);
+  const collection = searchParams.get("collection") || DEFAULT_COLLECTION;
+  const limit = Number(searchParams.get("limit") || "200");
 
-  const snap = await adminDb
-    .collection("consults")
-    .orderBy("createdAt", "desc")
-    .limit(limitN)
-    .get();
+  try {
+    // createdAt이 없는 문서가 섞여 있을 수도 있으니, 실패하면 id 기준으로 폴백
+    let snap;
+    try {
+      snap = await adminDb.collection(collection)
+        .orderBy("createdAt", "desc")
+        .limit(limit)
+        .get();
+    } catch {
+      snap = await adminDb.collection(collection)
+        .orderBy("__name__", "desc")
+        .limit(limit)
+        .get();
+    }
 
-  const items = snap.docs.map((doc) => {
-    const d: any = doc.data();
-    const created: Date = d?.createdAt?.toDate?.() ?? new Date();
-    return {
-      id: doc.id,
-      title: `${mask(d?.name || "")}님의 상담신청이 접수되었습니다.`,
-      date: fmt(created),
-    };
-  });
+    const items = snap.docs.map((d) => {
+      const x = d.data() as any;
+      return {
+        id: d.id,
+        name: x.name ?? "",
+        phone: x.phone ?? "",
+        email: x.email ?? "",
+        message: x.message ?? "",
+        status: x.status ?? "new",
+        createdAt: x.createdAt?.toDate?.()?.toISOString?.() ?? null,
+      };
+    });
 
-  return NextResponse.json({ items });
+    return NextResponse.json({ items });
+  } catch (e) {
+    return NextResponse.json({ error: "failed_to_fetch" }, { status: 500 });
+  }
 }

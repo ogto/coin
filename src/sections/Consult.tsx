@@ -12,6 +12,8 @@ type PostItem = {
   href?: string;
 };
 
+const COLLECTION = process.env.NEXT_PUBLIC_CONSULTS_COLLECTION ?? "consults";
+
 export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
   // ----------------- 상태 -----------------
   const [localPosts, setLocalPosts] = useState<PostItem[]>(posts);
@@ -28,8 +30,8 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
   const isEmail = (v: string) => /\S+@\S+\.\S+/.test(v);
   const normPhone = (v: string) => v.replace(/[^\d]/g, "");
   const maskName = (name: string) => {
-    const n = name.trim();
-    if (n.length <= 1) return n;
+    const n = (name ?? "").trim();
+    if (n.length <= 1) return n || "고객";
     if (n.length === 2) return n[0] + "*";
     return n[0] + "*".repeat(n.length - 2) + n[n.length - 1];
   };
@@ -41,13 +43,24 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
     const ctl = new AbortController();
     (async () => {
       try {
-        const res = await fetch("/api/consults?limit=20", {
+        const res = await fetch(`/api/consults?limit=20&collection=${encodeURIComponent(COLLECTION)}`, {
           cache: "no-store",
           signal: ctl.signal,
         });
         if (!res.ok) return;
         const data = await res.json();
-        if (Array.isArray(data.items)) setLocalPosts(data.items);
+
+        // 🔧 API 응답 → PostItem으로 변환
+        const items: PostItem[] = Array.isArray(data.items)
+          ? data.items.map((it: any) => ({
+              id: it.id,
+              title: `${maskName(it.name ?? "고객")}님의 상담신청이 접수되었습니다.`,
+              date: it.createdAt ? fmtDate(new Date(it.createdAt)) : fmtDate(new Date()),
+              href: undefined, // 필요시 상세 링크 연결
+            }))
+          : [];
+
+        setLocalPosts(items);
       } catch {
         // 무시 (네트워크 오류 등)
       }
@@ -77,6 +90,7 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
         message: form.message.trim(),
         agree: true,
         createdAt: serverTimestamp(),
+        status: "new",
         ua: typeof navigator !== "undefined" ? navigator.userAgent : "",
         referer: typeof document !== "undefined" ? document.referrer : "",
         path: typeof location !== "undefined" ? location.pathname : "",

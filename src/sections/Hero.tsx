@@ -129,9 +129,9 @@ export default function Hero() {
       >
         <div className="flex items-center gap-3 text-white/85" style={{ textShadow: "0 6px 20px rgba(0,0,0,.5)" }}>
           <span className="text-lg font-medium">Scroll</span>
-<span className="relative inline-block h-7 w-3.5 rounded-full border-2 border-white/70">
-  <span className="absolute left-1/2 top-1.5 h-2 w-2 -translate-x-1/2 animate-bounce rounded-full bg-white/90" />
-</span>
+          <span className="relative inline-block h-7 w-3.5 rounded-full border-2 border-white/70">
+            <span className="absolute left-1/2 top-1.5 h-2 w-2 -translate-x-1/2 animate-bounce rounded-full bg-white/90" />
+          </span>
         </div>
       </motion.div>
     </section>
