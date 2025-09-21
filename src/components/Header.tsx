@@ -65,9 +65,9 @@ const SECTIONS: Section[] = [
     title: "고객 지원",
     icon: <LifeBuoy className="h-5 w-5" />,
     items: [
-      { title: "공지사항", href: "/support#notice" },
-      { title: "자주 묻는 질문", href: "/support#faq" },
-      { title: "문의하기", href: "/support#contact" },
+      { title: "공지사항", href: "/notice" },
+      { title: "자주 묻는 질문", href: "/faq" },
+      { title: "문의하기", href: "/consult" },
     ],
   },
 ];
