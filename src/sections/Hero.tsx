@@ -9,7 +9,6 @@ export default function Hero() {
     <section
       className="
         relative w-full overflow-hidden bg-black
-        mt-16                        // 헤더 높이만큼 아래로 내림 (h-16 = 64px)
         h-[calc(100dvh-64px)]        // 보이는 화면에서 헤더 높이만큼 뺀 높이
         md:h-[calc(100vh-64px)]      // 데스크탑 폴백
       "

@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="relative mt-24 border-t border-white/10 bg-[#0b1220]">
+    <footer className="relative border-t border-white/10 bg-[#0b1220]">
       {/* 은은한 배경 글로우 */}
       <div
         className="pointer-events-none absolute inset-0"

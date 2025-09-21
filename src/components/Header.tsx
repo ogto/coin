@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 import {
   Building2,
   Compass,
@@ -97,6 +98,8 @@ const SECTIONS: Section[] = [
   },
 ];
 
+const EASE_OUT = [0.16, 1, 0.3, 1] as const;
+
 // =========================
 // 헤더 컴포넌트 (확대/인터랙션 강화)
 // =========================
@@ -106,6 +109,8 @@ export default function HeaderBankStyle() {
   const [open, setOpen] = useState(false);
   const [hovering, setHovering] = useState(false);
   const [spot, setSpot] = useState({ x: 0, y: 0 });
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
   const panelRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
   const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -145,13 +150,21 @@ export default function HeaderBankStyle() {
     };
   }, [hovering]);
 
+  useEffect(() => {
+    setOpen(false);
+    setHovering(false);
+    setMobileOpen(false);
+    if (hoverTimer.current) { clearTimeout(hoverTimer.current); hoverTimer.current = null; }
+    document.body.style.overflow = "";
+  }, [pathname]);
+
   return (
-<header
-  className={[
-    "fixed inset-x-0 top-0 z-[999] h-16 bg-[#0b1220]/95 backdrop-blur-sm transition-colors",
-    scrolled ? "shadow-[0_8px_32px_rgba(0,0,0,0.45)]" : "",
-  ].join(" ")}
->
+    <header
+      className={[
+        "fixed inset-x-0 top-0 z-[999] h-16 bg-[#0b1220]/95 backdrop-blur-sm transition-colors",
+        scrolled ? "shadow-[0_8px_32px_rgba(0,0,0,0.45)]" : "",
+      ].join(" ")}
+    >
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6">
         {/* 좌: 로고 + 전체메뉴(데스크탑 전용) */}
         <div className="flex items-center gap-4">
@@ -181,13 +194,13 @@ export default function HeaderBankStyle() {
         {/* 우: 로그인 + 모바일 메뉴 묶음 */}
         <div className="flex items-center gap-2">
           <Link
-            href="/login"
+            href="#consult"
             className="inline-flex items-center gap-1.5 rounded-xl border border-black/10 bg-white/90 px-3.5 py-2 text-[14px] font-semibold text-[#0b1220] shadow-sm transition hover:-translate-y-[1px] hover:shadow-md"
           >
-            <LogIn className="h-4.5 w-4.5" /> 로그인
+            <LogIn className="h-4.5 w-4.5" /> 상담신청
           </Link>
 
-          <MobileTrigger onOpen={() => setOpen(true)} />
+          <MobileTrigger onOpen={() => setMobileOpen(true)} />
         </div>
       </div>
 
@@ -199,7 +212,7 @@ export default function HeaderBankStyle() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
+            transition={{ duration: 0.22, ease: EASE_OUT }}
             className="relative hidden sm:block"
             onMouseEnter={() => setHovering(true)}
             onMouseLeave={() => setHovering(false)}
@@ -272,7 +285,7 @@ export default function HeaderBankStyle() {
       </AnimatePresence>
 
       {/* 모바일 드로워: 독립 상태 관리 + 바디 스크롤 락 */}
-      <MobileDrawer sections={SECTIONS} />
+      <MobileDrawer sections={SECTIONS} open={mobileOpen} onOpenChange={setMobileOpen} />
     </header>
   );
 }
@@ -295,26 +308,34 @@ function MobileTrigger({ onOpen }: { onOpen: () => void }) {
 // =========================
 // 모바일 드로워 (터치 개선, 바디 스크롤 락)
 // =========================
-function MobileDrawer({ sections }: { sections: Section[] }) {
-  const [open, setOpen] = useState(false);
-
+function MobileDrawer({
+  sections,
+  open,
+  onOpenChange,
+}: {
+  sections: Section[];
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+}) {
   // 바디 스크롤 락
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
+    return () => { document.body.style.overflow = ""; };
   }, [open]);
+
+  // ESC 닫기
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onOpenChange(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onOpenChange]);
 
   return (
     <>
-      {/* 고정된 우측 하단 플로팅 트리거 (선택적): 필요시 주석 해제 */}
-      {/* <button className="fixed bottom-4 right-4 z-[60] rounded-full bg-emerald-500 p-3 text-white shadow-lg md:hidden" onClick={() => setOpen(true)}>메뉴</button> */}
-
       <AnimatePresence>
         {open && (
           <motion.div key="mobile" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="md:hidden">
-            <div className="fixed inset-0 z-[70] h-screen bg-black/40" onClick={() => setOpen(false)} />
+            <div className="fixed inset-0 z-[70] h-screen bg-black/40" onClick={() => onOpenChange(false)} />
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
@@ -324,12 +345,11 @@ function MobileDrawer({ sections }: { sections: Section[] }) {
             >
               <div className="mb-4 flex items-center justify-between">
                 <div className="text-[16px] font-semibold">전체메뉴</div>
-                <button onClick={() => setOpen(false)} aria-label="닫기" className="rounded-full border border-black/10 bg-white p-2">
+                <button onClick={() => onOpenChange(false)} aria-label="닫기" className="rounded-full border border-black/10 bg-white p-2">
                   <svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M18 6L6 18M6 6l12 12"/></svg>
                 </button>
               </div>
 
-              {/* 섹션 카드 리스트 (터치 영역 확대) */}
               <nav className="space-y-4">
                 {sections.map((sec) => (
                   <div key={sec.key} className="rounded-2xl border border-black/10 bg-white p-4">
@@ -340,7 +360,7 @@ function MobileDrawer({ sections }: { sections: Section[] }) {
                     <ul className="divide-y divide-black/5 text-[14.5px]">
                       {sec.items.map((it) => (
                         <li key={it.href}>
-                          <Link href={it.href} className="block px-1 py-3 text-[#0b1220]/90" onClick={() => setOpen(false)}>
+                          <Link href={it.href} className="block px-1 py-3 text-[#0b1220]/90" onClick={() => onOpenChange(false)}>
                             <div className="font-medium">{it.title}</div>
                             {it.desc && <div className="text-[12.5px] text-black/55">{it.desc}</div>}
                           </Link>
@@ -354,9 +374,6 @@ function MobileDrawer({ sections }: { sections: Section[] }) {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* 헤더의 모바일 버튼과 연결 */}
-      <HeaderMobileBridge onOpen={() => setOpen(true)} />
     </>
   );
 }

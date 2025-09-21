@@ -2,6 +2,13 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
+// 공통 임포트
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import BackToTop from "@/components/BackToTop";
+import RouteKey from "@/components/RouteKey";
+import ScrollToTop from "@/components/ScrollToTop";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -23,11 +30,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0b1220]`}
       >
-        {children}
+        <Header />
+        <ScrollToTop />
+        <RouteKey>
+          <div className="pt-16">{children}</div>
+        </RouteKey>
+        <Footer />
+        <BackToTop />
       </body>
     </html>
   );

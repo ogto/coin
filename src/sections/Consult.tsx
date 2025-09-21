@@ -217,7 +217,7 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
                 disabled={submitting}
                 className="mt-1 inline-flex w-full items-center justify-center rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-600 disabled:opacity-60"
               >
-                {submitting ? "전송 중..." : "문의 신청 보내기"}
+                {submitting ? "전송 중..." : "상담 신청 보내기"}
               </button>
             </form>
           </motion.div>

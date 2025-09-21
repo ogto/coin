@@ -1,8 +1,6 @@
-// app/about/page.tsx
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
 import {
   Building2,
   MessageSquareQuote,
@@ -22,6 +20,8 @@ const fadeUp = {
   transition: { duration: 0.5, ease: EASE_OUT },
 };
 
+const VIEWPORT = { once: true, amount: 0.2, margin: "-64px 0px -10% 0px" } as const;
+
 export default function AboutPage() {
   return (
     <main className="relative min-h-screen bg-[#0b1220]">
@@ -39,7 +39,7 @@ export default function AboutPage() {
         <motion.div
           initial={fadeUp.initial}
           whileInView={fadeUp.whileInView}
-          viewport={{ once: true, margin: "-10%" }}
+          viewport={VIEWPORT}
           transition={fadeUp.transition}
           className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70"
         >
@@ -49,7 +49,7 @@ export default function AboutPage() {
         <motion.h1
           initial={fadeUp.initial}
           whileInView={fadeUp.whileInView}
-          viewport={{ once: true, margin: "-10%" }}
+          viewport={VIEWPORT}
           transition={{ ...fadeUp.transition, delay: 0.05 }}
           className="mt-3 text-3xl font-extrabold leading-tight text-white sm:text-4xl"
         >
@@ -59,7 +59,7 @@ export default function AboutPage() {
         <motion.div
           initial={fadeUp.initial}
           whileInView={fadeUp.whileInView}
-          viewport={{ once: true, margin: "-10%" }}
+          viewport={VIEWPORT}
           transition={{ ...fadeUp.transition, delay: 0.1 }}
           className="mt-2 h-1 w-28 rounded-full bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-400"
         />
@@ -69,10 +69,9 @@ export default function AboutPage() {
       <section className="relative mx-auto grid max-w-7xl grid-cols-1 gap-6 px-6 py-10 md:grid-cols-2">
         {/* 회사 개요 */}
         <motion.div
-          initial={fadeUp.initial}
-          whileInView={fadeUp.whileInView}
-          viewport={{ once: true, margin: "-10%" }}
-          transition={fadeUp.transition}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: EASE_OUT }}
           className="rounded-2xl border border-white/10 bg-white/[0.06] p-6 shadow-[0_10px_40px_rgba(0,0,0,.25)]"
         >
           <div className="mb-3 flex items-center gap-2 text-emerald-300">
@@ -91,10 +90,9 @@ export default function AboutPage() {
 
         {/* 대표 인사말 */}
         <motion.div
-          initial={fadeUp.initial}
-          whileInView={fadeUp.whileInView}
-          viewport={{ once: true, margin: "-10%" }}
-          transition={{ ...fadeUp.transition, delay: 0.05 }}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: EASE_OUT, delay: 0.05 }}
           className="rounded-2xl border border-white/10 bg-white/[0.06] p-6"
         >
           <div className="mb-4 flex items-center gap-2 text-amber-300">
@@ -122,7 +120,7 @@ export default function AboutPage() {
         <motion.div
           initial={fadeUp.initial}
           whileInView={fadeUp.whileInView}
-          viewport={{ once: true, margin: "-10%" }}
+          viewport={VIEWPORT}
           transition={fadeUp.transition}
           className="mb-4 flex items-center gap-2 text-emerald-300"
         >
@@ -136,7 +134,7 @@ export default function AboutPage() {
               key={p.title}
               initial={{ opacity: 0, y: 12, scale: 0.98 }}
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, margin: "-15%" }}
+              viewport={VIEWPORT}
               transition={{ duration: 0.5, delay: i * 0.06, ease: EASE_OUT }}
               className="group rounded-2xl border border-white/10 bg-white/[0.06] p-5 hover:border-emerald-300/30"
             >
@@ -160,7 +158,7 @@ export default function AboutPage() {
         <motion.div
           initial={fadeUp.initial}
           whileInView={fadeUp.whileInView}
-          viewport={{ once: true, margin: "-10%" }}
+          viewport={VIEWPORT}
           transition={fadeUp.transition}
           className="rounded-2xl border border-white/10 bg-white/[0.06] p-6"
         >
@@ -187,7 +185,7 @@ export default function AboutPage() {
         <motion.div
           initial={fadeUp.initial}
           whileInView={fadeUp.whileInView}
-          viewport={{ once: true, margin: "-10%" }}
+          viewport={VIEWPORT}
           transition={{ ...fadeUp.transition, delay: 0.05 }}
           className="rounded-2xl border border-white/10 bg-white/[0.06] p-6"
         >
