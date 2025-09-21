@@ -35,10 +35,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0b1220]`}
       >
         <Header />
-        <ScrollToTop />
-        <RouteKey>
-          <div className="pt-16">{children}</div>
-        </RouteKey>
+          <ScrollToTop />
+          <RouteKey>
+            <div className="pt-16">{children}</div>
+          </RouteKey>
         <Footer />
         <BackToTop />
       </body>
