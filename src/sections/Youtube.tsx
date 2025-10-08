@@ -154,7 +154,7 @@ export default function Youtube({
           <h2 className="text-3xl font-bold text-black sm:text-4xl">{title}</h2>
           <p className="max-w-2xl text-sm text-black/60 sm:text-base">{subtitle}</p>
 
-          {channelLink && (
+          {/* {channelLink && (
             <a
               href={channelLink}
               target="_blank"
@@ -166,7 +166,7 @@ export default function Youtube({
                 <path fill="currentColor" d="M10 17l5-5-5-5v10z" />
               </svg>
             </a>
-          )}
+          )} */}
         </div>
 
         {/* 반응형 그리드: 모바일1 / sm2 / lg3 */}
