@@ -18,17 +18,17 @@ export default function Page() {
       <Vision />
       <InsightCarouselSection />
       {/* YOUTUBE */}
-      {/* <Youtube
+      <Youtube
         title="유튜브"
         subtitle="데이터로 해석한 시장 관점과 전략을 영상으로 제공합니다."
         channelLink="https://www.youtube.com/@한방닥터이글스" // 선택
         videos={[
-          { url: "https://www.youtube.com/watch?v=kPadF1XeVFo", title: "코인투자 어떻게 해야될까?" },
-          { url: "https://www.youtube.com/watch?v=uq7w-UJF0sE&t=169s", title: "차트 보는방법" },
-          { url: "https://www.youtube.com/watch?v=8iBS7INut8Y", title: "불장에 대처하기" },
+          { url: "https://www.youtube.com/watch?si=GGzp0gaEcgkRzQIt&v=9ByaU1_lut4&feature=youtu.be", title: "" },
+          { url: "https://www.youtube.com/watch?si=Uq--iiUxB11Jih4V&v=rm6qS0jG20c&feature=youtu.be", title: "" },
+          { url: "https://www.youtube.com/watch?v=mVYv3PgPIIE&feature=youtu.be", title: "" },
           // 필요 개수만큼 추가
         ]}
-      /> */}
+      />
       {/* CONSULT */}
       <Consult
         posts={[

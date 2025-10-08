@@ -1,32 +1,66 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 
+/* =========================
+   Types
+========================= */
 type VideoItem = {
-  url: string;          // ex) https://www.youtube.com/watch?v=VIDEO_ID
-  title?: string;       // 선택: 카드 하단 타이틀
+  url: string;            // https://www.youtube.com/watch?v=VIDEO_ID or youtu.be/VIDEO_ID or /shorts/VIDEO_ID
+  title?: string;         // 카드 하단 타이틀(선택)
+  thumbOverride?: string; // 썸네일 강제 지정(선택)
 };
 
-function getVideoId(url: string) {
+type YoutubeProps = {
+  title?: string;
+  subtitle?: string;
+  channelLink?: string; // 채널 전체보기 버튼 링크(선택)
+  videos: VideoItem[];
+};
+
+/* =========================
+   Utils
+========================= */
+function getVideoId(url: string): string {
   try {
     const u = new URL(url);
-    if (u.hostname === "youtu.be") return u.pathname.slice(1);
-    if (u.searchParams.get("v")) return u.searchParams.get("v")!;
-    // shorts 등 특수경로 처리
-    const parts = u.pathname.split("/");
-    const i = parts.findIndex((p) => p === "shorts");
-    if (i >= 0 && parts[i + 1]) return parts[i + 1];
+    const host = u.hostname.replace(/^www\./, "");
+    if (host === "youtu.be") return u.pathname.slice(1);
+    // 표준 watch
+    const v = u.searchParams.get("v");
+    if (v) return v;
+    // shorts, embed 등 경로형
+    const parts = u.pathname.split("/").filter(Boolean);
+    const idx = parts.findIndex((p) => p === "shorts" || p === "embed" || p === "watch");
+    if (idx >= 0 && parts[idx + 1]) return parts[idx + 1];
+    // /VIDEO_ID 바로 오는 경우
+    if (parts.length === 1) return parts[0];
     return "";
   } catch {
     return "";
   }
 }
 
+function getThumbs(id: string, override?: string) {
+  const maxres = override ?? `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
+  const hq = override ?? `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+  return { maxres, hq };
+}
+
 function YouTubeCard({ url, title }: VideoItem) {
-  const [play, setPlay] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const id = useMemo(() => getVideoId(url), [url]);
-  const embed = `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`;
+
+  const params = [
+    "autoplay=1",         // 클릭 후 자동재생
+    "controls=1",         // 기본 컨트롤 보이기
+    "fs=1",               // 전체화면 버튼 보이기
+    "playsinline=1",      // iOS 인라인 재생
+    "modestbranding=1",   // 로고 최소화
+    "rel=0",              // 관련 동영상(동일 채널 우선)
+  ].join("&");
+  const embed = `https://www.youtube.com/embed/${id}?${params}`;
 
   const maxres = `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`;
   const hq = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
@@ -37,42 +71,43 @@ function YouTubeCard({ url, title }: VideoItem) {
       transition={{ type: "spring", stiffness: 220, damping: 18 }}
       className="group relative overflow-hidden rounded-2xl border border-black/[0.06] bg-white shadow-[0_8px_40px_rgba(8,15,40,0.08)]"
     >
-      <div className="relative aspect-video w-full">
-        {play ? (
+      <div className="relative w-full aspect-video">
+        {loaded ? (
           <iframe
             src={embed}
             title={title ?? `YouTube video ${id}`}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
             className="h-full w-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+            allowFullScreen
+            frameBorder={0}
+            loading="lazy"
+            referrerPolicy="strict-origin-when-cross-origin"
+            sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"
           />
         ) : (
           <button
-            onClick={() => setPlay(true)}
+            onClick={() => setLoaded(true)}
             className="relative h-full w-full"
-            aria-label="재생"
+            aria-label="영상 재생"
           >
-            {/* 썸네일: maxres → 실패시 hq로 폴백 */}
             <img
               src={maxres}
               onError={(e) => { (e.currentTarget as HTMLImageElement).src = hq; }}
               alt={title ?? "YouTube thumbnail"}
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
               loading="lazy"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
-            {/* 그라데이션/글로우 */}
             <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_40%,rgba(0,0,0,0.45)_100%)]" />
-            <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-              <div className="absolute -inset-4 bg-[radial-gradient(60%_40%_at_50%_50%,rgba(16,185,129,0.25),transparent)]" />
-            </div>
-            {/* 플레이 버튼 */}
             <span className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/95 p-4 shadow-lg ring-1 ring-black/10 transition transform group-hover:scale-105">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="#10b981"><path d="M8 5v14l11-7z"/></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="#10b981">
+                <path d="M8 5v14l11-7z" />
+              </svg>
             </span>
           </button>
         )}
       </div>
-      {/* 타이틀 바 */}
+
       {title && (
         <div className="flex items-start gap-2 px-4 py-3">
           <div className="mt-1 h-2 w-2 flex-none rounded-full bg-emerald-400" />
@@ -85,17 +120,15 @@ function YouTubeCard({ url, title }: VideoItem) {
   );
 }
 
+/* =========================
+   Section
+========================= */
 export default function Youtube({
   title = "유튜브",
   subtitle = "최신 인사이트 영상을 모았습니다.",
   channelLink,
   videos,
-}: {
-  title?: string;
-  subtitle?: string;
-  channelLink?: string;   // 채널 전체보기 버튼 링크(선택)
-  videos: VideoItem[];
-}) {
+}: YoutubeProps) {
   return (
     <section className="relative overflow-hidden bg-white py-24">
       {/* 부드러운 배경 */}
@@ -126,20 +159,20 @@ export default function Youtube({
               href={channelLink}
               target="_blank"
               rel="noreferrer"
-              className="mt-4 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-black shadow-sm hover:-translate-y-[1px] hover:shadow-md transition"
+              className="mt-4 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-black shadow-sm transition hover:-translate-y-[1px] hover:shadow-md"
             >
               채널 전체보기
               <svg width="16" height="16" viewBox="0 0 24 24" className="-mr-1">
-                <path fill="currentColor" d="M10 17l5-5-5-5v10z"/>
+                <path fill="currentColor" d="M10 17l5-5-5-5v10z" />
               </svg>
             </a>
           )}
         </div>
 
-        {/* 그리드 */}
+        {/* 반응형 그리드: 모바일1 / sm2 / lg3 */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {videos.map((v, i) => (
-            <YouTubeCard key={i} {...v} />
+            <YouTubeCard key={`${v.url}-${i}`} {...v} />
           ))}
         </div>
       </div>

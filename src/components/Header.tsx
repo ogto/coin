@@ -11,6 +11,7 @@ import {
   LifeBuoy,
   Menu as MenuIcon,
   LogIn,
+  X, // ⬅️ 닫기 아이콘 사용
 } from "lucide-react";
 import Image from "next/image";
 
@@ -102,14 +103,15 @@ export default function Header() {
           <Image
             src="/images/logo.png"
             alt="BUNNY STOCK"
-            width={120}
-            height={32}
+            width={150}
+            height={62}
             priority
           />
         </Link>
 
         {/* 가운데: 메뉴 (데스크탑) */}
-        <nav className="hidden md:flex flex-1 items-center justify-center gap-8">
+        {/* 권장 간격: 20px -> gap-5 적용 */}
+        <nav className="hidden md:flex flex-1 items-center justify-center gap-12">
           {SECTIONS.map((sec) => (
             <div
               key={sec.key}
@@ -118,11 +120,12 @@ export default function Header() {
               onMouseLeave={() => setActive(null)}
             >
               <button
-                className={`text-[16px] font-semibold transition ${
-                  pathname.startsWith(`/${sec.key}`)
-                    ? "text-emerald-300"
-                    : "text-white/80 hover:text-white"
-                }`}
+                className={`text-[20px] font-semibold transition px-2  /* ⬅️ 시각적 여백 보강 */
+                  ${
+                    pathname.startsWith(`/${sec.key}`)
+                      ? "text-emerald-300"
+                      : "text-white/80 hover:text-white"
+                  }`}
               >
                 {sec.title}
               </button>
@@ -141,7 +144,7 @@ export default function Header() {
                         <li key={it.href}>
                           <Link
                             href={it.href}
-                            className="block px-3 py-1.5 text-[16px] leading-5 text-white/75 hover:bg-white/10 hover:text-white text-center"
+                            className="block px-3 py-1.5 text-[18px] leading-5 text-white/75 hover:bg-white/10 hover:text-white text-center"
                           >
                             {it.title}
                           </Link>
@@ -160,15 +163,17 @@ export default function Header() {
           <Link
             href="/consult"
             className="
-              inline-flex
-              h-9 items-center gap-2 whitespace-nowrap
-              rounded-xl bg-emerald-400/95 px-3
-              text-[14px] font-semibold text-[#0b1220]
+              inline-flex items-center justify-center gap-2 whitespace-nowrap
+              h-11 px-4 text-[15px] leading-none  /* ⬅ 모바일 동일 크기 */
+              md:h-9 md:px-3 md:text-[14px]       /* ⬅ 데스크탑에서만 축소 */
+              rounded-xl bg-emerald-400/95
+              font-semibold text-[#0b1220]
               shadow-[0_6px_18px_rgba(0,0,0,.22)]
               hover:bg-emerald-500 transition
+              select-none
             "
           >
-            <LogIn className="h-4 w-4 -ml-0.5" />
+            <LogIn className="h-5 w-5 md:h-4 md:w-4 -ml-0.5" />
             상담신청
           </Link>
 
@@ -192,17 +197,26 @@ export default function Header() {
 function MobileTrigger({ onOpen }: { onOpen: () => void }) {
   return (
     <button
-      className="md:hidden inline-flex items-center gap-2 rounded-xl border border-black/10 bg-white/90 px-3 py-2 text-[14px] font-semibold text-[#0b1220] shadow-sm"
       onClick={onOpen}
       aria-label="모바일 전체메뉴 열기"
+      className="
+        md:hidden inline-flex items-center justify-center gap-2
+        h-11 min-w-[44px] rounded-xl
+        px-4 text-[15px] font-semibold text-[#0b1220]
+        border border-black/10 bg-white/90 shadow-sm
+        touch-manipulation select-none
+        active:scale-[0.98] transition
+        [-webkit-tap-highlight-color:transparent]
+      "
     >
-      <MenuIcon className="h-5 w-5" /> 메뉴
+      <MenuIcon className="h-5 w-5" />
+      메뉴
     </button>
   );
 }
 
 // =========================
-// 모바일 드로워 (기존 그대로)
+// 모바일 드로워
 // =========================
 function MobileDrawer({
   sections,
@@ -215,15 +229,11 @@ function MobileDrawer({
 }) {
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
+    return () => { document.body.style.overflow = ""; };
   }, [open]);
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onOpenChange(false);
-    };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onOpenChange(false); };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [onOpenChange]);
@@ -237,56 +247,75 @@ function MobileDrawer({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="md:hidden"
+          role="dialog"
+          aria-modal="true"
         >
+          {/* 배경 */}
           <div
             className="fixed inset-0 z-[70] h-screen bg-black/40"
             onClick={() => onOpenChange(false)}
           />
+
+          {/* 패널 */}
           <motion.div
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", stiffness: 260, damping: 28 }}
-            className="fixed inset-y-0 right-0 z-[80] h-screen w-[90%] max-w-sm overflow-auto border-l border-black/10 bg-white p-5"
+            className="
+              fixed inset-y-0 right-0 z-[80] h-screen w-[90%] max-w-sm
+              overflow-auto border-l border-black/10 bg-white
+              pt-[calc(env(safe-area-inset-top)+12px)]
+              pb-[calc(env(safe-area-inset-bottom)+12px)]
+              px-5
+            "
           >
-            <div className="mb-4 flex items-center justify-between">
-              <button
-                onClick={() => onOpenChange(false)}
-                aria-label="닫기"
-                className="rounded-full border border-black/10 bg-white p-2"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24">
-                  <path
-                    fill="currentColor"
-                    d="M18 6L6 18M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
+            {/* 닫기 버튼 (고정형) */}
+            <button
+              onClick={() => onOpenChange(false)}
+              aria-label="닫기"
+              className="
+                absolute top-[calc(env(safe-area-inset-top)+8px)] right-5
+                z-[90] grid place-items-center
+                h-10 w-10 rounded-full
+                border border-black/10 bg-white shadow-sm
+                text-[#0b1220]/80
+                touch-manipulation active:scale-95
+                transition
+                [-webkit-tap-highlight-color:transparent]
+              "
+            >
+              <X className="h-5 w-5" />
+            </button>
 
-            <nav className="space-y-4">
+            {/* 본문 콘텐츠 */}
+            <nav className="mt-12 space-y-4">
               {sections.map((sec) => (
                 <div
                   key={sec.key}
                   className="rounded-2xl border border-black/10 bg-white p-4"
                 >
-                  <div className="mb-2 flex items-center gap-2 text-[15px] font-semibold text-[#0b1220]">
-                    <span className="grid h-8 w-8 place-items-center rounded-lg bg-emerald-50 text-emerald-600">
+                  <div className="mb-2 flex items-center gap-3 text-[15px] font-semibold text-[#0b1220]">
+                    <span className="grid h-9 w-9 place-items-center rounded-lg bg-emerald-50 text-emerald-600">
                       {sec.icon}
                     </span>
                     {sec.title}
                   </div>
-                  <ul className="divide-y divide-black/5 text-[14.5px]">
+                  <ul className="divide-y divide-black/5 text-[15px]">
                     {sec.items.map((it) => (
                       <li key={it.href}>
                         <Link
                           href={it.href}
-                          className="block px-1 py-3 text-[#0b1220]/90"
                           onClick={() => onOpenChange(false)}
+                          className="
+                            block min-h-[48px] py-3.5 px-1 text-[#0b1220]/90
+                            touch-manipulation focus:outline-none
+                            focus-visible:ring-2 focus-visible:ring-emerald-500/60 rounded-md
+                          "
                         >
                           <div className="font-medium">{it.title}</div>
                           {it.desc && (
-                            <div className="text-[12.5px] text-black/55">
+                            <div className="text-[13px] text-black/55 mt-0.5">
                               {it.desc}
                             </div>
                           )}
