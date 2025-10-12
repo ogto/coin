@@ -30,7 +30,10 @@ export async function PATCH(req: NextRequest, context: any) {
     }
   }
 
-  const col = process.env.FIREBASE_ADMIN_CONSULTS_COLLECTION ?? "consults";
+  const col =
+    new URL(req.url).searchParams.get("collection") ||
+    process.env.FIREBASE_ADMIN_CONSULTS_COLLECTION ||
+    "consults";
   await adminDb.collection(col).doc(id).update({ status });
 
   return NextResponse.json({ ok: true });

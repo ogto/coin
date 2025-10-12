@@ -60,7 +60,7 @@ export default function DashboardClient() {
   useEffect(() => {
     let alive = true;
     setLoading(true);
-    fetch(`/api/consults?limit=200&collection=${encodeURIComponent(COLLECTION)}`, { cache: "no-store" })
+    fetch(`/api/admin/consults?limit=200&collection=${encodeURIComponent(COLLECTION)}`, { cache: "no-store" })
       .then((r) => r.json())
       .then((json) => {
         if (!alive) return;
@@ -96,7 +96,7 @@ export default function DashboardClient() {
   // 상태 업데이트(낙관적)
 async function updateStatus(id: string, next: Status): Promise<void> {
   const qs = new URLSearchParams({ collection: COLLECTION });
-  const res = await fetch(`/api/consults/${id}/status?` + qs.toString(), {
+  const res = await fetch(`/api/admin/consults/${id}/status?` + qs.toString(), {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ status: next }),
