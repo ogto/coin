@@ -80,8 +80,12 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
 
     setSubmitting(true);
     setErrorMsg(null);
+
+    // ▼ 15초 타임아웃 추가
+    const ctl = new AbortController();
+    const to = setTimeout(() => ctl.abort(), 15_000);
+
     try {
-      // 서버가 Firestore 저장 + 내부/고객 메일 발송
       const res = await fetch(`/api/consult`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -92,15 +96,27 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
           message: form.message.trim(),
           agree: true,
         }),
+        cache: "no-store",
+        signal: ctl.signal,
       });
 
       const ct = res.headers.get("content-type") || "";
-      const data = ct.includes("application/json") ? await res.json() : { ok: false, error: await res.text() };
-      if (!res.ok || !data?.ok) throw new Error(data?.error || `HTTP ${res.status}`);
+      const payload = ct.includes("application/json")
+        ? await res.json()
+        : { ok: false, error: await res.text() };
 
-      // UI 즉시 반영 (중복 방지)
+      // ▼ 실패 시 서버 메시지를 바로 사용 (state에 넣고 alert 하지 말고, 지역변수로 alert)
+      if (!res.ok || !payload?.ok) {
+        const msg = String(payload?.error || `HTTP ${res.status}`);
+        console.error("[consult submit failed]", { status: res.status, payload });
+        setErrorMsg(msg);
+        alert(msg);                 // ← 여기서 state 아닌 지역변수 msg 사용
+        return;
+      }
+
+      // 성공 UI 반영
       const newItem: PostItem = {
-        id: data.id as string,
+        id: payload.id as string,
         title: `${maskName(form.name)}님의 상담신청이 접수되었습니다.`,
         date: fmtDate(new Date()),
       };
@@ -109,13 +125,20 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
       alert("접수되었습니다. 담당자가 확인 후 연락드립니다.");
       setForm({ name: "", phone: "", email: "", message: "", agree: false });
     } catch (err: any) {
-      console.log("[consult submit error]", err);
-      setErrorMsg(err?.message ?? "접수 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
-      alert(errorMsg ?? "접수 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      // ▼ Abort 에러/네트워크 에러를 확실히 구분해서 보여줌
+      const msg =
+        err?.name === "AbortError"
+          ? "요청이 지연되었습니다. 네트워크 상태를 확인하고 다시 시도해주세요."
+          : String(err?.message || err || "접수 중 오류가 발생했습니다.");
+      console.error("[consult submit error]", err);
+      setErrorMsg(msg);
+      alert(msg);                   // ← state 대신 지역변수 msg 사용
     } finally {
+      clearTimeout(to);
       setSubmitting(false);
     }
   }
+
 
   /* ───── UI ───── */
   return (
