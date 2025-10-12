@@ -2,73 +2,71 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { db } from "@/lib/firebase";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 type PostItem = {
   id: string | number;
   title: string;
-  date: string;  // "YYYY.MM.DD"
+  date: string; // "YYYY.MM.DD"
   href?: string;
 };
 
 const COLLECTION = process.env.NEXT_PUBLIC_CONSULTS_COLLECTION ?? "consults";
 
+/* ───── 유틸 ───── */
+const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+const normPhone = (v: string) => String(v || "").replace(/[^\d]/g, "");
+const maskName = (name: string) => {
+  const n = (name ?? "").trim();
+  if (n.length <= 1) return n || "고객";
+  if (n.length === 2) return n[0] + "*";
+  return n[0] + "*".repeat(n.length - 2) + n[n.length - 1];
+};
+const fmtDate = (d: Date) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
+
 export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
-  // ----------------- 상태 -----------------
+  /* ───── 상태 ───── */
   const [localPosts, setLocalPosts] = useState<PostItem[]>(posts);
-  const [form, setForm] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    message: "",
-    agree: false,
-  });
+  const [form, setForm] = useState({ name: "", phone: "", email: "", message: "", agree: false });
   const [submitting, setSubmitting] = useState(false);
+  const [loadingList, setLoadingList] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // ----------------- 유틸 -----------------
-  const isEmail = (v: string) => /\S+@\S+\.\S+/.test(v);
-  const normPhone = (v: string) => v.replace(/[^\d]/g, "");
-  const maskName = (name: string) => {
-    const n = (name ?? "").trim();
-    if (n.length <= 1) return n || "고객";
-    if (n.length === 2) return n[0] + "*";
-    return n[0] + "*".repeat(n.length - 2) + n[n.length - 1];
-  };
-  const fmtDate = (d: Date) =>
-    `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, "0")}.${String(d.getDate()).padStart(2, "0")}`;
-
-  // ----------------- 초기 누적 조회 -----------------
+  /* ───── 초기 목록 조회 (공개 API) ───── */
   useEffect(() => {
     const ctl = new AbortController();
     (async () => {
       try {
-        const res = await fetch(`/api/consults?limit=20&collection=${encodeURIComponent(COLLECTION)}`, {
-          cache: "no-store",
-          signal: ctl.signal,
-        });
-        if (!res.ok) return;
-        const data = await res.json();
+        setLoadingList(true);
+        const res = await fetch(
+          `/api/consults?limit=20&collection=${encodeURIComponent(COLLECTION)}`,
+          { cache: "no-store", signal: ctl.signal }
+        );
+        const ct = res.headers.get("content-type") || "";
+        const data = ct.includes("application/json") ? await res.json() : { ok: false, items: [] };
 
-        // 🔧 API 응답 → PostItem으로 변환
+        if (!res.ok || (data.ok === false && !Array.isArray(data.items))) return;
+
         const items: PostItem[] = Array.isArray(data.items)
           ? data.items.map((it: any) => ({
               id: it.id,
               title: `${maskName(it.name ?? "고객")}님의 상담신청이 접수되었습니다.`,
               date: it.createdAt ? fmtDate(new Date(it.createdAt)) : fmtDate(new Date()),
-              href: undefined, // 필요시 상세 링크 연결
+              href: undefined,
             }))
           : [];
 
         setLocalPosts(items);
       } catch {
-        // 무시 (네트워크 오류 등)
+        /* 네트워크 오류 등은 무시 */
+      } finally {
+        setLoadingList(false);
       }
     })();
     return () => ctl.abort();
   }, []);
 
-  // ----------------- 제출 -----------------
+  /* ───── 제출 ───── */
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (submitting) return;
@@ -81,24 +79,28 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
     if (!form.agree) return alert("개인정보 수집·이용에 동의가 필요합니다.");
 
     setSubmitting(true);
+    setErrorMsg(null);
     try {
-      // Firestore 쓰기 (읽기는 서버 API가 담당)
-      const ref = await addDoc(collection(db, COLLECTION), {
-        name: form.name.trim(),
-        phone: normPhone(form.phone),
-        email: form.email.trim(),
-        message: form.message.trim(),
-        agree: true,
-        createdAt: serverTimestamp(),
-        status: "new",
-        ua: typeof navigator !== "undefined" ? navigator.userAgent : "",
-        referer: typeof document !== "undefined" ? document.referrer : "",
-        path: typeof location !== "undefined" ? location.pathname : "",
+      // 서버가 Firestore 저장 + 내부/고객 메일 발송
+      const res = await fetch(`/api/consult`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          phone: normPhone(form.phone),
+          email: form.email.trim(),
+          message: form.message.trim(),
+          agree: true,
+        }),
       });
 
-      // 화면 즉시 반영 (중복 방지)
+      const ct = res.headers.get("content-type") || "";
+      const data = ct.includes("application/json") ? await res.json() : { ok: false, error: await res.text() };
+      if (!res.ok || !data?.ok) throw new Error(data?.error || `HTTP ${res.status}`);
+
+      // UI 즉시 반영 (중복 방지)
       const newItem: PostItem = {
-        id: ref.id,
+        id: data.id as string,
         title: `${maskName(form.name)}님의 상담신청이 접수되었습니다.`,
         date: fmtDate(new Date()),
       };
@@ -107,19 +109,15 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
       alert("접수되었습니다. 담당자가 확인 후 연락드립니다.");
       setForm({ name: "", phone: "", email: "", message: "", agree: false });
     } catch (err: any) {
-      console.log("[firestore error]", {
-        name: err?.name,
-        code: err?.code,
-        message: err?.message,
-        customData: err?.customData,
-      });
-      alert("접수 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      console.log("[consult submit error]", err);
+      setErrorMsg(err?.message ?? "접수 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      alert(errorMsg ?? "접수 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
     } finally {
       setSubmitting(false);
     }
   }
 
-  // ----------------- UI -----------------
+  /* ───── UI ───── */
   return (
     <section id="consult" className="relative overflow-hidden bg-white py-24">
       {/* 부드러운 배경 */}
@@ -176,6 +174,7 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     placeholder="홍길동"
                     className="w-full rounded-lg border border-black/10 bg-white px-3 py-3 text-sm outline-none ring-emerald-500/20 focus:ring"
+                    required
                   />
                 </div>
                 <div className="space-y-1">
@@ -186,6 +185,7 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
                     placeholder="010-0000-0000"
                     inputMode="tel"
                     className="w-full rounded-lg border border-black/10 bg-white px-3 py-3 text-sm outline-none ring-emerald-500/20 focus:ring"
+                    required
                   />
                 </div>
               </div>
@@ -199,6 +199,7 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
                   inputMode="email"
                   autoComplete="email"
                   className="w-full rounded-lg border border-black/10 bg-white px-3 py-3 text-sm outline-none ring-emerald-500/20 focus:ring"
+                  required
                 />
               </div>
 
@@ -210,6 +211,7 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
                   rows={5}
                   placeholder="필요하신 상담 내용을 구체적으로 남겨주세요."
                   className="w-full resize-none rounded-lg border border-black/10 bg-white px-3 py-3 text-sm outline-none ring-emerald-500/20 focus:ring"
+                  required
                 />
               </div>
 
@@ -220,6 +222,7 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
                     checked={form.agree}
                     onChange={(e) => setForm({ ...form, agree: e.target.checked })}
                     className="h-4 w-4 rounded border-black/20 text-emerald-600 focus:ring-emerald-500"
+                    required
                   />
                   개인정보 수집·이용에 동의합니다.
                 </label>
@@ -230,13 +233,20 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
                 type="submit"
                 disabled={submitting}
                 className="mt-1 inline-flex w-full items-center justify-center rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-600 disabled:opacity-60"
+                aria-busy={submitting}
               >
                 {submitting ? "전송 중..." : "상담 신청 보내기"}
               </button>
+
+              {errorMsg && (
+                <p className="pt-2 text-sm text-red-600" role="alert" aria-live="polite">
+                  {errorMsg}
+                </p>
+              )}
             </form>
           </motion.div>
 
-          {/* RIGHT: 누적 현황 (서버 API로 읽고, 제출 시 즉시 prepend) */}
+          {/* RIGHT: 누적 현황 */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -247,11 +257,15 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
             <div className="mb-5">
               <div className="text-xs tracking-wide text-black/50">크레딧·증거성</div>
               <h3 className="text-xl font-semibold text-black">상담신청 현황</h3>
-              <p className="mt-1 text-xs text-black/50">최근 접수된 문의 내역입니다. 개인정보 보호를 위해 일부 정보는 마스킹됩니다.</p>
+              <p className="mt-1 text-xs text-black/50">
+                최근 접수된 문의 내역입니다. 개인정보 보호를 위해 일부 정보는 마스킹됩니다.
+              </p>
             </div>
 
             <ul className="divide-y divide-black/10">
-              {localPosts.length === 0 ? (
+              {loadingList ? (
+                <li className="py-10 text-center text-sm text-black/45">불러오는 중…</li>
+              ) : localPosts.length === 0 ? (
                 <li className="py-10 text-center text-sm text-black/45">아직 표시할 내역이 없습니다.</li>
               ) : (
                 localPosts.map((p) => (
@@ -265,14 +279,17 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
               )}
             </ul>
 
-            <div className="mt-4 text-right">
-              <a href="#" className="inline-flex items-center gap-1 text-sm font-medium text-emerald-600 hover:underline">
+            {/* <div className="mt-4 text-right">
+              <a
+                href="#"
+                className="inline-flex items-center gap-1 text-sm font-medium text-emerald-600 hover:underline"
+              >
                 더보기
                 <svg width="14" height="14" viewBox="0 0 24 24">
                   <path fill="currentColor" d="M10 17l5-5-5-5v10z" />
                 </svg>
               </a>
-            </div>
+            </div> */}
           </motion.div>
         </div>
       </div>

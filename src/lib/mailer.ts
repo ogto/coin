@@ -11,12 +11,17 @@ const MAIL_TO_INTERNAL = process.env.MAIL_TO_INTERNAL || "info@bunnystock.io";
 let _transport: nodemailer.Transporter | null = null;
 function getTransport() {
   if (_transport) return _transport;
-  _transport = nodemailer.createTransport({
-    host: SMTP_HOST,
-    port: SMTP_PORT,
-    secure: SMTP_PORT === 465,
-    auth: { user: SMTP_USER, pass: SMTP_PASS },
-  });
+    _transport = nodemailer.createTransport({
+      host: SMTP_HOST,
+      port: SMTP_PORT,
+      secure: SMTP_PORT === 465,
+      auth: { user: SMTP_USER, pass: SMTP_PASS },
+      pool: true,                // 연결 풀 사용
+      maxConnections: 3,
+      maxMessages: Infinity,
+      socketTimeout: 15_000,     // 소켓 타임아웃
+      greetingTimeout: 10_000,
+    });
   return _transport;
 }
 
@@ -56,8 +61,19 @@ export async function sendInternalMail(payload: {
     to: MAIL_TO_INTERNAL,
     subject,
     html,
-    // 회신 시 상담자 메일로 바로 가도록
+    text: [
+      `신규 상담 접수`,
+      `이름: ${name}`,
+      `전화: ${phone}`,
+      `이메일: ${email}`,
+      `메시지: ${message}`,
+      `문서ID: ${docId}`,
+    ].join("\n"),
     replyTo: email,
+    headers: {
+      "X-Entity-Ref-ID": docId,
+      "List-Unsubscribe": "<mailto:info@bunnystock.io>",
+    },
   });
 }
 
@@ -77,5 +93,6 @@ export async function sendCustomerAckMail(payload: { name: string; to: string; }
     to,
     subject,
     html,
+    text: `${maskName(name)}님, 문의 감사합니다.\n담당자가 확인 후 최대한 빠르게 연락드리겠습니다.\n(본 메일은 발신 전용입니다.)`,
   });
 }
