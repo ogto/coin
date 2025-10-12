@@ -83,7 +83,7 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
     setSubmitting(true);
     try {
       // Firestore 쓰기 (읽기는 서버 API가 담당)
-      const ref = await addDoc(collection(db, "consults"), {
+      const ref = await addDoc(collection(db, COLLECTION), {
         name: form.name.trim(),
         phone: normPhone(form.phone),
         email: form.email.trim(),

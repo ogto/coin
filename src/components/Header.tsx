@@ -62,6 +62,17 @@ const SECTIONS: Section[] = [
     ],
   },
   {
+    key: "insight",
+    title: "인사이트 센터",
+    icon: <Database className="h-5 w-5" />,
+    items: [
+      { title: "시장 리포트", href: "/report" },
+      { title: "전문가 시장분석", href: "/report" },
+      { title: "리스크 관리 가이드", href: "/report" },
+      { title: "AI 기반 데이터", href: "/report" },
+    ],
+  },
+  {
     key: "support",
     title: "고객 지원",
     icon: <LifeBuoy className="h-5 w-5" />,
@@ -103,7 +114,7 @@ export default function Header() {
           <Image
             src="/images/logo.png"
             alt="BUNNY STOCK"
-            width={150}
+            width={60}
             height={62}
             priority
           />
