@@ -1,27 +1,35 @@
+// lib/mailer.ts
 import nodemailer from "nodemailer";
 
 const SMTP_HOST = process.env.SMTP_HOST!;
-const SMTP_PORT = Number(process.env.SMTP_PORT || "465");
+const SMTP_PORT = Number(process.env.SMTP_PORT || "587");
 const SMTP_USER = process.env.SMTP_USER!;
 const SMTP_PASS = process.env.SMTP_PASS!;
-const MAIL_FROM = process.env.MAIL_FROM || `"Bunny Stock" <noreply@bunnystock.io>`;
-const MAIL_TO_INTERNAL = process.env.MAIL_TO_INTERNAL || "info@bunnystock.io";
+export const MAIL_FROM = process.env.MAIL_FROM || "Bunny Stock <noreply@bunnystock.io>";
+export const MAIL_TO_INTERNAL = process.env.MAIL_TO_INTERNAL || "info@bunnystock.io";
 
-// 서버리스에서 커넥션 재활용을 위해 싱글톤 유지
 let _transport: nodemailer.Transporter | null = null;
-function getTransport() {
+
+export function getTransport() {
   if (_transport) return _transport;
-    _transport = nodemailer.createTransport({
-      host: SMTP_HOST,
-      port: SMTP_PORT,
-      secure: SMTP_PORT === 465,
-      auth: { user: SMTP_USER, pass: SMTP_PASS },
-      pool: true,                // 연결 풀 사용
-      maxConnections: 3,
-      maxMessages: Infinity,
-      socketTimeout: 15_000,     // 소켓 타임아웃
-      greetingTimeout: 10_000,
-    });
+
+  const is465 = SMTP_PORT === 465;
+
+  _transport = nodemailer.createTransport({
+    host: SMTP_HOST,
+    port: SMTP_PORT,
+    secure: is465,            // 465:true, 587:false
+    auth: { user: SMTP_USER, pass: SMTP_PASS },
+    pool: false,              // 서버리스/호스팅에서 pool 비권장
+    requireTLS: !is465,       // 587이면 TLS 강제
+    connectionTimeout: 15_000,
+    socketTimeout: 15_000,
+    greetingTimeout: 10_000,
+    tls: { servername: SMTP_HOST },
+    // logger: true,           // 필요시 잠깐 켜서 서버 로그 확인
+    // debug: true,
+  } as any);
+
   return _transport;
 }
 
@@ -53,28 +61,24 @@ export async function sendInternalMail(payload: {
       <p><b>이메일:</b> ${escapeHtml(email)}</p>
       <p><b>메시지:</b><br/>${nl2br(escapeHtml(message))}</p>
       <hr/>
-      <p><b>문서 ID:</b> ${docId}</p>
+      <p><b>문서 ID:</b> ${escapeHtml(docId)}</p>
     </div>
   `;
-  await getTransport().sendMail({
-    from: MAIL_FROM,
-    to: MAIL_TO_INTERNAL,
-    subject,
-    html,
-    text: [
-      `신규 상담 접수`,
-      `이름: ${name}`,
-      `전화: ${phone}`,
-      `이메일: ${email}`,
-      `메시지: ${message}`,
-      `문서ID: ${docId}`,
-    ].join("\n"),
-    replyTo: email,
-    headers: {
-      "X-Entity-Ref-ID": docId,
-      "List-Unsubscribe": "<mailto:info@bunnystock.io>",
-    },
-  });
+
+  try {
+    const info = await getTransport().sendMail({
+      from: MAIL_FROM,
+      to: MAIL_TO_INTERNAL,
+      subject,
+      html,
+      replyTo: email,
+    });
+    console.log("[mail] internal sent:", info?.messageId);
+    return info;
+  } catch (e: any) {
+    console.error("[mail] internal failed:", e?.message);
+    throw e; // 반드시 위로 던짐
+  }
 }
 
 // 고객 자동 회신
@@ -88,11 +92,18 @@ export async function sendCustomerAckMail(payload: { name: string; to: string; }
       <p style="color:#6b7280;font-size:12px;">본 메일은 발신 전용입니다.</p>
     </div>
   `;
-  await getTransport().sendMail({
-    from: MAIL_FROM,
-    to,
-    subject,
-    html,
-    text: `${maskName(name)}님, 문의 감사합니다.\n담당자가 확인 후 최대한 빠르게 연락드리겠습니다.\n(본 메일은 발신 전용입니다.)`,
-  });
+
+  try {
+    const info = await getTransport().sendMail({
+      from: MAIL_FROM,
+      to,
+      subject,
+      html,
+    });
+    console.log("[mail] customer sent:", info?.messageId);
+    return info;
+  } catch (e: any) {
+    console.error("[mail] customer failed:", e?.message);
+    throw e;
+  }
 }

@@ -1,38 +1,37 @@
-// app/api/consult/route.ts
 import { NextResponse } from "next/server";
-export const runtime = "nodejs";
-
 import { adminDb } from "@/lib/firebaseAdmin";
 import { sendInternalMail, sendCustomerAckMail } from "@/lib/mailer";
+
+export const runtime = "nodejs";        // ★★ 서버에서 필수
+export const dynamic = "force-dynamic";
 
 const COLLECTION = process.env.NEXT_PUBLIC_CONSULTS_COLLECTION || "consults";
 
 export async function POST(req: Request) {
-  const { name, phone, email, message, agree } = await req.json();
+  try {
+    const body = await req.json();
+    const { name, phone, email, message, agree } = body || {};
+    if (!name || !phone || !email || !message || !agree) {
+      return NextResponse.json({ ok: false, error: "bad_request" }, { status: 400 });
+    }
 
-  // 최소 검증
-  const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-  const normPhone = (v: string) => String(v || "").replace(/[^\d]/g, "");
-  if (!name?.trim() || normPhone(phone).length < 9 || !isEmail(email) || !message?.trim() || agree !== true) {
-    return NextResponse.json({ ok: false, error: "INVALID_INPUT" }, { status: 400 });
+    const docRef = await adminDb.collection(COLLECTION).add({
+      name: String(name).trim(),
+      phone: String(phone).trim(),
+      email: String(email).trim(),
+      message: String(message).trim(),
+      agree: true,
+      status: "new",
+      createdAt: Date.now(),          // number(ms)로 통일
+    });
+
+    // 메일 2건 (하나라도 실패면 throw → 500 반환)
+    await sendInternalMail({ name, phone, email, message, docId: docRef.id });
+    await sendCustomerAckMail({ name, to: email });
+
+    return NextResponse.json({ ok: true, id: docRef.id });
+  } catch (e: any) {
+    console.error("[consult POST] failed:", e?.message);
+    return NextResponse.json({ ok: false, error: e?.message || "failed" }, { status: 500 });
   }
-
-  // 저장
-  const docRef = await adminDb.collection(COLLECTION).add({
-    name: name.trim(),
-    phone: normPhone(phone),
-    email: email.trim().toLowerCase(),
-    message: message.trim(),
-    agree: true,
-    status: "new",
-    createdAt: Date.now(),
-  });
-
-  // 메일 2통(내부/고객) 병렬 발송 — 실패해도 응답은 성공
-  await Promise.allSettled([
-    sendInternalMail({ name, phone: normPhone(phone), email, message, docId: docRef.id }),
-    sendCustomerAckMail({ name, to: email }),
-  ]);
-
-  return NextResponse.json({ ok: true, id: docRef.id });
 }
