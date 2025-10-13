@@ -12,6 +12,11 @@ type PostItem = {
 
 const COLLECTION = process.env.NEXT_PUBLIC_CONSULTS_COLLECTION ?? "consults";
 
+const INPUT_CLS =
+  "w-full rounded-lg border border-black/10 bg-white px-3 py-3 text-sm " +
+  "text-black placeholder:text-black/40 caret-emerald-600 " +
+  "outline-none ring-emerald-500/20 focus:ring";
+
 /* ───── 유틸 ───── */
 const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 const normPhone = (v: string) => String(v || "").replace(/[^\d]/g, "");
@@ -196,7 +201,7 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     placeholder="홍길동"
-                    className="w-full rounded-lg border border-black/10 bg-white px-3 py-3 text-sm outline-none ring-emerald-500/20 focus:ring"
+                    className={INPUT_CLS}
                     required
                   />
                 </div>
@@ -207,7 +212,7 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
                     onChange={(e) => setForm({ ...form, phone: e.target.value })}
                     placeholder="010-0000-0000"
                     inputMode="tel"
-                    className="w-full rounded-lg border border-black/10 bg-white px-3 py-3 text-sm outline-none ring-emerald-500/20 focus:ring"
+                    className={INPUT_CLS}
                     required
                   />
                 </div>
@@ -221,7 +226,7 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
                   placeholder="you@example.com"
                   inputMode="email"
                   autoComplete="email"
-                  className="w-full rounded-lg border border-black/10 bg-white px-3 py-3 text-sm outline-none ring-emerald-500/20 focus:ring"
+                  className={INPUT_CLS}
                   required
                 />
               </div>
@@ -233,7 +238,7 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
                   onChange={(e) => setForm({ ...form, message: e.target.value })}
                   rows={5}
                   placeholder="필요하신 상담 내용을 구체적으로 남겨주세요."
-                  className="w-full resize-none rounded-lg border border-black/10 bg-white px-3 py-3 text-sm outline-none ring-emerald-500/20 focus:ring"
+                  className={INPUT_CLS + " reesize-none"}
                   required
                 />
               </div>

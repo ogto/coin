@@ -1,60 +1,57 @@
 // lib/mailer.ts
-import nodemailer from "nodemailer";
+import nodemailer, { Transporter } from "nodemailer";
 
-const reqEnv = (k: string) => {
-  const v = process.env[k];
-  if (!v) throw new Error(`ENV ${k} is missing`);
-  return v;
-};
-
-const SMTP_HOST = reqEnv("SMTP_HOST");          // 예: smtp.gmail.com / email-smtp.ap-northeast-2.amazonaws.com / smtp.sendgrid.net
-const SMTP_PORT = Number(process.env.SMTP_PORT || 587);
-const SMTP_SECURE = process.env.SMTP_SECURE === "true" || SMTP_PORT === 465; // 465:true, 587:false(STARTTLS)
-const SMTP_USER = reqEnv("SMTP_USER");
-const SMTP_PASS = reqEnv("SMTP_PASS");
-const FROM_EMAIL = process.env.FROM_EMAIL || SMTP_USER;
-
-// nodemailer는 Edge에서 동작 안 하니, API 라우트에서 runtime="nodejs" 선언 필수(이미 하셨음)
-export const transporter = nodemailer.createTransport({
-  host: SMTP_HOST,
-  port: SMTP_PORT,
-  secure: SMTP_SECURE,
-  auth: { user: SMTP_USER, pass: SMTP_PASS },
-  tls: { minVersion: "TLSv1.2" },
-});
-
-// 서버 기동 시 1회 연결 확인(배포 환경 로그에서 확인용)
-let verifiedOnce: Promise<boolean> | null = null;
-export async function ensureSmtpReady() {
-  if (!verifiedOnce) {
-    verifiedOnce = transporter.verify()
-      .then((ok) => {
-        console.log(`[mailer] verify ok=${ok} host=${SMTP_HOST} port=${SMTP_PORT} secure=${SMTP_SECURE}`);
-        return ok;
-      })
-      .catch((e) => {
-        console.error("[mailer] verify failed:", e?.message || e);
-        throw e;
-      });
-  }
-  return verifiedOnce;
+declare global {
+  // Next.js hot-reload에서도 싱글톤 유지
+  // eslint-disable-next-line no-var
+  var __MAILER__: Transporter | undefined;
 }
 
-type InternalMailInput = {
-  name: string;
-  phone: string;
-  email: string;
-  message: string;
-  docId: string;
-};
+function getConfig() {
+  const host = process.env.SMTP_HOST;
+  const port = Number(process.env.SMTP_PORT || 587);
+  const secure = process.env.SMTP_SECURE === "true" || port === 465; // 465:true, 587:false
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+  const from = process.env.FROM_EMAIL || user;
 
-export async function sendInternalMail(input: InternalMailInput) {
-  await ensureSmtpReady();
-  const { name, phone, email, message, docId } = input;
+  if (!host || !user || !pass) {
+    // 여기서만 에러를 던짐(요청 시점에만 실행됨)
+    throw new Error(
+      "SMTP env missing: SMTP_HOST / SMTP_USER / SMTP_PASS"
+    );
+  }
+  return { host, port, secure, user, pass, from };
+}
 
-  return transporter.sendMail({
-    from: FROM_EMAIL,
-    to: process.env.INTERNAL_MAIL_TO || FROM_EMAIL, // 예: cs@yourdomain.com
+function getTransporter(): Transporter {
+  if (!global.__MAILER__) {
+    const { host, port, secure, user, pass } = getConfig();
+    global.__MAILER__ = nodemailer.createTransport({
+      host,
+      port,
+      secure,
+      auth: { user, pass },
+      tls: { minVersion: "TLSv1.2" },
+    });
+  }
+  return global.__MAILER__!;
+}
+
+export async function sendInternalMail({
+  name,
+  phone,
+  email,
+  message,
+  docId,
+}: {
+  name: string; phone: string; email: string; message: string; docId: string;
+}) {
+  const t = getTransporter();
+  const { from } = getConfig(); // from만 재사용
+  return t.sendMail({
+    from,
+    to: process.env.INTERNAL_MAIL_TO || from,
     subject: `[문의] ${name} / ${phone} (id:${docId})`,
     text: [
       `이름: ${name}`,
@@ -67,10 +64,10 @@ export async function sendInternalMail(input: InternalMailInput) {
 }
 
 export async function sendCustomerAckMail({ name, to }: { name: string; to: string }) {
-  await ensureSmtpReady();
-
-  return transporter.sendMail({
-    from: FROM_EMAIL,
+  const t = getTransporter();
+  const { from } = getConfig();
+  return t.sendMail({
+    from,
     to,
     subject: "문의가 접수되었습니다",
     html: `<p>${name}님, 문의가 정상 접수되었습니다. 빠르게 회신드리겠습니다.</p>`,
