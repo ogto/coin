@@ -58,7 +58,7 @@ export async function sendInternalMail({
       `전화: ${phone}`,
       `이메일: ${email}`,
       `문의: ${message}`,
-      `문서ID: ${docId}`,
+      `문서ID (개발자 전용): ${docId}`,
     ].join("\n"),
   });
 }

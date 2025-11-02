@@ -153,27 +153,23 @@ export default function Youtube({
           <div className="text-[11px] tracking-[0.18em] text-black/45">BUNNY STOCK MEDIA</div>
           <h2 className="text-3xl font-bold text-black sm:text-4xl">{title}</h2>
           <p className="max-w-2xl text-sm text-black/60 sm:text-base">{subtitle}</p>
-
-          {/* {channelLink && (
-            <a
-              href={channelLink}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-4 inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-black shadow-sm transition hover:-translate-y-[1px] hover:shadow-md"
-            >
-              채널 전체보기
-              <svg width="16" height="16" viewBox="0 0 24 24" className="-mr-1">
-                <path fill="currentColor" d="M10 17l5-5-5-5v10z" />
-              </svg>
-            </a>
-          )} */}
         </div>
 
-        {/* 반응형 그리드: 모바일1 / sm2 / lg3 */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {videos.map((v, i) => (
-            <YouTubeCard key={`${v.url}-${i}`} {...v} />
-          ))}
+        {/* 가로 중앙 정렬: 콘텐츠 너비만큼만 inline-grid로 묶기 */}
+        <div className="flex justify-center">
+          <div
+            className="
+              inline-grid
+              justify-center
+              gap-6
+              [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]
+              max-w-[900px]
+            "
+          >
+            {videos.map((v, i) => (
+              <YouTubeCard key={`${v.url}-${i}`} {...v} />
+            ))}
+          </div>
         </div>
       </div>
     </section>

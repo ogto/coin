@@ -23,9 +23,9 @@ export default function Page() {
         subtitle="데이터로 해석한 시장 관점과 전략을 영상으로 제공합니다."
         channelLink="https://www.youtube.com/@한방닥터이글스" // 선택
         videos={[
-          { url: "https://www.youtube.com/watch?si=GGzp0gaEcgkRzQIt&v=9ByaU1_lut4&feature=youtu.be", title: "" },
-          { url: "https://www.youtube.com/watch?si=Uq--iiUxB11Jih4V&v=rm6qS0jG20c&feature=youtu.be", title: "" },
-          { url: "https://www.youtube.com/watch?v=mVYv3PgPIIE&feature=youtu.be", title: "" },
+          { url: "https://youtu.be/1Ao6aXqO_ko?si=U8YOcc80SSQIh3nB", title: "" },
+          { url: "https://youtu.be/x2YKREvhkVQ?si=08l4PNDP-zmcaoKp", title: "" },
+          // { url: "https://www.youtube.com/watch?v=mVYv3PgPIIE&feature=youtu.be", title: "" },
           // 필요 개수만큼 추가
         ]}
       />
