@@ -175,7 +175,7 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
         </div>
 
         {/* 좌우 2컬럼 */}
-        <div className="grid gap-8 lg:grid-cols-2">
+        <div className="grid">
           {/* LEFT: Form */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -275,7 +275,7 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
           </motion.div>
 
           {/* RIGHT: 누적 현황 */}
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -307,7 +307,7 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
               )}
             </ul>
 
-            {/* <div className="mt-4 text-right">
+            <div className="mt-4 text-right">
               <a
                 href="#"
                 className="inline-flex items-center gap-1 text-sm font-medium text-emerald-600 hover:underline"
@@ -317,8 +317,8 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
                   <path fill="currentColor" d="M10 17l5-5-5-5v10z" />
                 </svg>
               </a>
-            </div> */}
-          </motion.div>
+            </div>
+          </motion.div> */}
         </div>
       </div>
     </section>
