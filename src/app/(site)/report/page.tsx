@@ -118,7 +118,6 @@ export default function BunnyStockReportPage() {
 }
 
 /* 컴포넌트 */
-/* 컴포넌트 */
 function SectionBlock({
   icon,
   title,
@@ -144,7 +143,7 @@ function SectionBlock({
           <CardTopImage
             src={image}
             alt={title}
-            className="h-72 sm:h-106 md:h-[840px]"
+            className="h-42 sm:h-46 md:h-[440px]"
           />
         )}
 

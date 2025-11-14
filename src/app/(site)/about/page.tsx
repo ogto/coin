@@ -269,7 +269,7 @@ export default function AboutPage() {
           transition={fadeUp.transition}
           className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06]"
         >
-          <CardTopImage src="/new_images/6.png" alt="VISION" className="h-56 sm:h-72 md:h-60" />
+          {/* <CardTopImage src="/new_images/6.png" alt="VISION" className="h-56 sm:h-72 md:h-60" /> */}
           <div className="p-6">
             <div className="mb-3 text-sm font-semibold text-emerald-300">비전 (VISION)</div>
 
@@ -293,7 +293,7 @@ export default function AboutPage() {
           transition={{ ...fadeUp.transition, delay: 0.05 }}
           className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06]"
         >
-          <CardTopImage src="/new_images/7.png" alt="MISSION" className="h-56 sm:h-72 md:h-60" />
+          {/* <CardTopImage src="/new_images/7.png" alt="MISSION" className="h-56 sm:h-72 md:h-60" /> */}
           <div className="p-6">
             <div className="mb-3 text-sm font-semibold text-emerald-300">미션 (MISSION)</div>
 
