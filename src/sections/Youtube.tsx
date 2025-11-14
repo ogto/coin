@@ -159,11 +159,12 @@ export default function Youtube({
         <div className="flex justify-center">
           <div
             className="
-              inline-grid
-              justify-center
+              grid
+              w-full
+              max-w-[1024px]
               gap-6
-              [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]
-              max-w-[900px]
+              grid-cols-1
+              md:grid-cols-3
             "
           >
             {videos.map((v, i) => (

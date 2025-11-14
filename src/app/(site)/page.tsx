@@ -25,6 +25,7 @@ export default function Page() {
         videos={[
           { url: "https://youtu.be/1Ao6aXqO_ko?si=U8YOcc80SSQIh3nB", title: "" },
           { url: "https://youtu.be/x2YKREvhkVQ?si=08l4PNDP-zmcaoKp", title: "" },
+          { url: "https://www.youtube.com/watch?v=9ByaU1_lut4&t=22s", title: "" },
           // { url: "https://www.youtube.com/watch?v=mVYv3PgPIIE&feature=youtu.be", title: "" },
           // 필요 개수만큼 추가
         ]}

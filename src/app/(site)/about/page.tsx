@@ -172,7 +172,7 @@ export default function AboutPage() {
               transition={{ duration: 0.5, delay: i * 0.06, ease: EASE_OUT }}
               className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06] hover:border-emerald-300/30"
             >
-              <CardTopImage src={p.image} alt={p.title} className="h-56 sm:h-64" />
+              {/* <CardTopImage src={p.image} alt={p.title} className="h-56 sm:h-64" /> */}
 
               <div className="p-5">
                 <div className="mb-3 flex items-center gap-2">
@@ -215,11 +215,11 @@ export default function AboutPage() {
           className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06]"
         >
           {/* 대표 이미지 (크게) */}
-          <CardTopImage
+          {/* <CardTopImage
             src="/new_images/8.png"
             alt="차별화 포인트"
             className="h-64 sm:h-80 md:h-[420px]"
-          />
+          /> */}
 
           {/* 불릿 요약 */}
           <div className="p-6">

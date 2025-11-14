@@ -117,8 +117,8 @@ export default function ProvidersPage() {
               <div className="mb-2 text-[13px] font-semibold text-cyan-300">해외 디지털자산거래소</div>
               <ChipGrid
                 items={[
-                  "Binance(바이낸스)","Coinbase(코인베이스)","Kraken(크라켄)","Bybit(바이비트)",
-                  "OKX(오케이엑스)","Bitget(비트겟)","Bitfinex(비트파이넥스)","Gate.io(게이트아이오)",
+                  "Binance(바이낸스)","Coinbase(코인베이스)",
+                  "OKX(오케이엑스)","Bitget(비트겟)", "OrangeX(오렌지엑스)", "Deepcoin(딥코인)", "Ecobit(에코빗)"
                 ]}
               />
             </div>

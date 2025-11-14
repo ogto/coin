@@ -27,11 +27,12 @@ export default function Footer() {
                 className="rounded-xl"
                 priority
               />
-              <div className="text-sm text-white/70">데이터 기반 투자 인텔리전스</div>
+              <div className="text-sm text-white/70">데이터 기반 인텔리전스, 흔들림 없는 시선</div>
             </div>
 
             <p className="mt-4 max-w-lg text-sm leading-6 text-white/60">
-              신뢰할 수 있는 데이터와 절제된 인터랙션으로, 변동성 속에서도 흔들리지 않는 결정을 돕습니다.
+              정제된 데이터와 절제된 인터랙션으로<br />
+              불확실한 시장 속에서도 명확한 방향을 제시합니다.
             </p>
 
             {/* 소셜 (외부 링크는 a 태그 유지) */}

@@ -48,13 +48,13 @@ export default function BunnyStockReportPage() {
       <SectionBlock
         icon={<CalendarDays className="h-6 w-6" />}
         title="📅 주간/월간 시장 리포트"
-        image="/new_images/16.jpg"
+        image="/new_images/18.jpg"
       >
         <p>Bunny Stock은 정기적으로 발간되는 시장 리포트를 통해 국내외 금융시장의 주요 흐름과 변화를 종합적으로 제공합니다.</p>
 
         {/* 🗓 주간 브리핑 */}
         <SubTitle>주간 브리핑</SubTitle>
-        <CardSubImage src="/new_images/17.jpg" alt="주간 브리핑 이미지" />
+        {/* <CardSubImage src="/new_images/17.jpg" alt="주간 브리핑 이미지" /> */}
         <Bullet>코스피·코스닥 및 글로벌 주요 지수 주간 흐름 요약</Bullet>
         <Bullet>산업별 섹터 리포트 (반도체, 2차전지, IT, 바이오 등)</Bullet>
         <Bullet>주요 기업 실적 발표 및 공시 모니터링</Bullet>
@@ -62,7 +62,7 @@ export default function BunnyStockReportPage() {
 
         {/* 🗓 월간 리포트 */}
         <SubTitle>월간 리포트</SubTitle>
-        <CardSubImage src="/new_images/18.jpg" alt="월간 리포트 이미지" />
+        {/* <CardSubImage src="/new_images/18.jpg" alt="월간 리포트 이미지" /> */}
         <Bullet>한 달간 주요 시장 트렌드 요약</Bullet>
         <Bullet>글로벌 경제지표와 한국 경제 동향 종합 분석</Bullet>
         <Bullet>기관 투자자 중심 자금 흐름 및 자산 배분 추세 정리</Bullet>
@@ -75,7 +75,7 @@ export default function BunnyStockReportPage() {
       <SectionBlock
         icon={<Users2 className="h-6 w-6" />}
         title="👨‍💼 전문가 시장분석"
-        image="/new_images/19.jpg"
+        // image="/new_images/19.jpg"
       >
         <p>전문가 그룹이 심층적이고 입체적인 시장 해석을 제시합니다.</p>
         <Bullet>전문가 코멘트: 글로벌 거시경제, 산업별 주요 트렌드에 대한 전문가 해설</Bullet>
@@ -89,7 +89,7 @@ export default function BunnyStockReportPage() {
       <SectionBlock
         icon={<ShieldCheck className="h-6 w-6" />}
         title="🛡 리스크 관리 가이드"
-        image="/new_images/20.png"
+        // image="/new_images/20.png"
       >
         <p>Bunny Stock은 투자 과정에서 발생할 수 있는 다양한 위험 요소를 체계적으로 관리할 수 있도록 가이드를 제공합니다.</p>
         <Bullet>시장 리스크 점검: 금리, 환율, 원자재 가격 등 주요 리스크 요인 분석</Bullet>
@@ -103,7 +103,7 @@ export default function BunnyStockReportPage() {
       <SectionBlock
         icon={<Bot className="h-6 w-6" />}
         title="🤖 AI 기반 데이터 분석"
-        image="/new_images/10.jpg"
+        // image="/new_images/10.jpg"
       >
         <p>빅데이터와 인공지능 기술을 활용한 정밀 분석으로 시장의 변화를 빠르게 포착합니다.</p>
         <Bullet>시장 신호 포착: 거래량 급증, 변동성 확대, 수급 패턴 변화 자동 감지</Bullet>
@@ -118,7 +118,18 @@ export default function BunnyStockReportPage() {
 }
 
 /* 컴포넌트 */
-function SectionBlock({ icon, title, image, children }: { icon: React.ReactNode; title: string; image: string; children: React.ReactNode }) {
+/* 컴포넌트 */
+function SectionBlock({
+  icon,
+  title,
+  image,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  image?: string;
+  children: React.ReactNode;
+}) {
   return (
     <section className="relative mx-auto max-w-7xl px-6 py-10">
       <motion.article
@@ -128,10 +139,20 @@ function SectionBlock({ icon, title, image, children }: { icon: React.ReactNode;
         transition={{ duration: 0.5, ease: EASE_OUT }}
         className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06]"
       >
-        <CardTopImage src={image} alt={title} className="h-72 sm:h-106 md:h-[840px]" />
+        {/* 이미지가 있을 때만 렌더링 */}
+        {image && (
+          <CardTopImage
+            src={image}
+            alt={title}
+            className="h-72 sm:h-106 md:h-[840px]"
+          />
+        )}
+
         <div className="p-6 space-y-3 text-white/90">
           <div className="flex items-center gap-2 text-emerald-300">
-            <span className="grid h-10 w-10 place-items-center rounded-md bg-white/5 ring-1 ring-inset ring-white/10">{icon}</span>
+            <span className="grid h-10 w-10 place-items-center rounded-md bg-white/5 ring-1 ring-inset ring-white/10">
+              {icon}
+            </span>
             <h2 className="text-xl font-semibold text-white">{title}</h2>
           </div>
           {children}
@@ -140,6 +161,7 @@ function SectionBlock({ icon, title, image, children }: { icon: React.ReactNode;
     </section>
   );
 }
+
 
 function CardTopImage({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
   return (

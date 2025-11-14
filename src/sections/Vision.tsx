@@ -207,9 +207,8 @@ export default function Vision() {
           className="mx-auto max-w-3xl mt-6 text-lg font-medium leading-relaxed text-white/95 sm:text-xl"
           style={{ textShadow: "0 12px 30px rgba(0,0,0,.5), 0 3px 8px rgba(0,0,0,.4)" }}
         >
-          “깊이 있는 시장 분석과 최신 기술 트렌드를 바탕으로 자산을 안전하게 관리하며,
-          <span className="text-white font-semibold"> 리스크를 최소화하면서도</span> 높은 성과를 지향한다”는 원칙을 인용해
-          BUNNY STOCK의 표준으로 재정의했습니다. 신호와 노이즈를 분리하고, 데이터가 말하는 근거로 전략을 설계합니다.
+          깊이 있는 시장 분석과 최신 기술 트렌드를 기반으로 데이터 중심의 인사이트를 제공합니다.
+          BUNNY STOCK은 신호와 노이즈를 구분하고, 데이터가 말하는 근거 위에서 전략적 판단을 설계합니다.
         </motion.p>
 
         <motion.p
@@ -219,8 +218,8 @@ export default function Vision() {
           viewport={{ once: true }}
           className="mx-auto mt-6 max-w-2xl text-base font-medium text-white/85 leading-relaxed"
         >
-          투명한 커뮤니케이션과 반복 가능한 프로세스로 신뢰를 축적합니다.
-          장기 성장과 안정적 자산 증대를 위한 파트너십을 약속합니다.
+          투명한 커뮤니케이션과 반복 가능한 프로세스를 통해 지속 가능한 성장과 신뢰를 쌓아갑니다.<br />
+          장기적인 목표 달성을 위한 전문 파트너십을 약속합니다.
         </motion.p>
 
         <motion.div

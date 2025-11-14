@@ -61,11 +61,11 @@ export default function ServicesPage() {
           transition={{ duration: 0.5, ease: EASE_OUT }}
           className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06]"
         >
-          <CardTopImage
+          {/* <CardTopImage
             src="/new_images/9.png"
             alt="법적 안내"
             className="h-52 sm:h-64 md:h-[560px]"  // ← 임의값 유틸
-          />
+          /> */}
           <div className="p-6">
             <div className="mb-3 flex items-center gap-2 text-emerald-300">
               <AlertTriangle className="h-5 w-5" />
@@ -164,11 +164,11 @@ export default function ServicesPage() {
           transition={{ duration: 0.5, ease: EASE_OUT }}
           className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.06]"
         >
-          <CardTopImage
+          {/* <CardTopImage
             src="/new_images/14.png"
             alt="서비스 운영 원칙"
             className="h-48 sm:h-60 md:h-[560px]"  // ← 임의값 유틸
-          />
+          /> */}
           <div className="p-6">
             <div className="mb-3 flex items-center gap-2 text-emerald-300">
               <ShieldCheck className="h-5 w-5" />
