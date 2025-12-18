@@ -21,7 +21,7 @@ const fadeUp = {
 };
 const VIEWPORT = { once: true, amount: 0.2, margin: "-64px 0px -10% 0px" } as const;
 
-const ADDRESS = "서울 강남구 도곡로 7길 7, 5층";
+const ADDRESS = "서울특별시 서초구 효령로31길 15";
 const GOOGLE_MAPS_EMBED =
   "https://www.google.com/maps?q=" + encodeURIComponent(ADDRESS) + "&output=embed";
 const GOOGLE_MAPS_LINK = "https://maps.google.com/?q=" + encodeURIComponent(ADDRESS);
@@ -58,7 +58,7 @@ export default function AboutPage() {
           transition={{ ...fadeUp.transition, delay: 0.05 }}
           className="mt-3 text-4xl font-extrabold leading-tight text-white sm:text-5xl"
         >
-          Hae Gang 주식회사
+          주식회사 해강홀딩스
         </motion.h1>
 
         <motion.div
