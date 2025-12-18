@@ -100,7 +100,7 @@ export default function AboutPage() {
 
             <ul className="mt-5 space-y-2 text-[15px] text-white/90 md:text-base">
               <Bullet>설립연도: 2022년</Bullet>
-              <Bullet>본사 위치: 서울특별시 강남구 도곡로 7길 7</Bullet>
+              <Bullet>본사 위치: 서울특별시 서초구 효령로31길 15</Bullet>
               <Bullet>
                 사업영역: 온라인정보제공업 · 기업리서치 자료 모바일 서비스업 · 유사투자자문업(금융위원회 신고 완료)
               </Bullet>
