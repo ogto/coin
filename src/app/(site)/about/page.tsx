@@ -58,7 +58,7 @@ export default function AboutPage() {
           transition={{ ...fadeUp.transition, delay: 0.05 }}
           className="mt-3 text-4xl font-extrabold leading-tight text-white sm:text-5xl"
         >
-          Bunny Stock 주식회사
+          Hae Gang 주식회사
         </motion.h1>
 
         <motion.div
@@ -92,7 +92,7 @@ export default function AboutPage() {
             </div>
 
             <p className="whitespace-pre-line text-[15px] leading-7 text-white/90 md:text-base">
-              {`Bunny Stock은 글로벌 금융 환경의 변화 속에서 투자자가 올바른 의사결정을 내릴 수 있도록,
+              {`Hae Gang은 글로벌 금융 환경의 변화 속에서 투자자가 올바른 의사결정을 내릴 수 있도록,
 객관적 투자정보 제공·시장분석·교육 서비스에 집중하는 유사투자자문업체입니다.
 우리는 단순한 투자 팁이나 예측을 제공하지 않고, 체계적이고 데이터 기반의 분석 결과를 토대로
 투자자가 합리적 선택을 할 수 있는 환경과 도구를 마련합니다.`}
@@ -138,10 +138,10 @@ export default function AboutPage() {
             </div>
 
             <blockquote className="text-[15px] leading-7 text-white/90 md:text-base">
-              {`"Bunny Stock은 단순히 정보를 전달하는 회사를 넘어, 투자자가 스스로 분석하고 판단할 수 있는 힘을 길러주는 동반자입니다.
+              {`"Hae Gang은 단순히 정보를 전달하는 회사를 넘어, 투자자가 스스로 분석하고 판단할 수 있는 힘을 길러주는 동반자입니다.
 복잡하고 변동성이 큰 금융시장에서 중요한 것은 '누구의 말'이 아니라 '객관적인 데이터와 스스로의 판단'입니다.
 우리는 정보의 투명성, 분석의 전문성, 운영의 책임성을 바탕으로 건전한 투자 문화를 만들어가고자 합니다.
-앞으로도 Bunny Stock은 투자자의 권익을 보호하고, 장기적 성장을 지원하는 신뢰할 수 있는 파트너로 함께 하겠습니다."`}
+앞으로도 Hae Gang은 투자자의 권익을 보호하고, 장기적 성장을 지원하는 신뢰할 수 있는 파트너로 함께 하겠습니다."`}
             </blockquote>
 
             <div className="mt-3 text-right text-xs text-white/60">— 대표이사 이서우</div>

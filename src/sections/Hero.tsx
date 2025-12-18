@@ -82,7 +82,7 @@ export default function Hero() {
             </div>
             <div className="leading-tight">
               <div className="text-3xl font-semibold tracking-wide">
-                BUNNY STOCK
+                Hae Gang
               </div>
               <div className="text-sm opacity-90">버니스탁</div>
             </div>

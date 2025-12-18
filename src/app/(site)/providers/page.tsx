@@ -65,7 +65,7 @@ export default function ProvidersPage() {
         >
           <Info className="mt-0.5 h-4.5 w-4.5 text-emerald-300" />
           <p>
-            <span className="font-semibold text-white">Bunny Stock</span>은 아래 거래소의 퍼블릭/파트너 API 데이터를
+            <span className="font-semibold text-white">Hae Gang</span>은 아래 거래소의 퍼블릭/파트너 API 데이터를
             참고하여 시장 정보를 제공합니다. 본 목록은 데이터 출처이며, 공식 제휴 관계가 아님을 명시합니다.
           </p>
         </motion.div>
@@ -135,7 +135,7 @@ export default function ProvidersPage() {
           </div>
           <div className="flex items-center gap-2 md:justify-end">
             <Info className="h-4 w-4 text-emerald-300" />
-            Bunny Stock은 이들 기관과 공식 파트너십 관계가 아닙니다.
+            Hae Gang은 이들 기관과 공식 파트너십 관계가 아닙니다.
           </div>
         </div>
       </section>

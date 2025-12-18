@@ -74,7 +74,7 @@ export default function ServicesPage() {
 
             <ul className="space-y-2 text-[15px] leading-7 text-white/90 md:text-base">
               <Bullet>
-                Bunny Stock은 금융위원회에 정식 신고된 유사투자자문업체로, 제공되는 모든 정보는 참고용 자료입니다.
+                Hae Gang은 금융위원회에 정식 신고된 유사투자자문업체로, 제공되는 모든 정보는 참고용 자료입니다.
               </Bullet>
               <Bullet>
                 투자 판단과 최종 책임은 고객 본인에게 있으며, 당사는 어떠한 수익 보장도 하지 않습니다.

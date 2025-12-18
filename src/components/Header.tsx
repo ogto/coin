@@ -122,7 +122,7 @@ export default function Header() {
         >
           <Image
             src="/images/logo.png"
-            alt="BUNNY STOCK"
+            alt="Hae Gang"
             fill
             priority
             className="object-contain"

@@ -9,7 +9,7 @@ export default function AdminLoginPage() {
         <div className="mb-5 flex items-center gap-3">
           <div className="h-8 w-8 rounded-lg bg-emerald-400" />
           <div>
-            <div className="text-sm font-semibold text-white">Bunny Stock Admin</div>
+            <div className="text-sm font-semibold text-white">Hae Gang Admin</div>
             <div className="text-xs text-white/50">Secure Console</div>
           </div>
         </div>

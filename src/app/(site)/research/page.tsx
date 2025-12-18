@@ -114,7 +114,7 @@ export default function ResearchPage() {
             <ul className="space-y-1.5 text-sm text-white/85">
               <Bullet>빅데이터 기반 시장 패턴 인식</Bullet>
               <Bullet>머신러닝 기반 데이터 분석</Bullet>
-              <Bullet>Bunny Stock 자체 개발 트레이딩 시그널</Bullet>
+              <Bullet>Hae Gang 자체 개발 트레이딩 시그널</Bullet>
               <Bullet>실시간 데이터 수집·정제·스코어링</Bullet>
             </ul>
           </div>
@@ -212,7 +212,7 @@ export default function ResearchPage() {
             <span className="text-base font-semibold text-white">중요 안내</span>
           </div>
           <ul className="space-y-1.5 text-sm text-white/85">
-            <Bullet>Bunny Stock의 AI 분석 시스템은 <span className="text-white">참고용 데이터</span>를 제공합니다.</Bullet>
+            <Bullet>Hae Gang의 AI 분석 시스템은 <span className="text-white">참고용 데이터</span>를 제공합니다.</Bullet>
             <Bullet>제공되는 모든 정보는 <span className="text-white">교육·학습 목적</span>으로 활용하시기 바랍니다.</Bullet>
             <Bullet>최종 투자 결정은 반드시 <span className="text-white">투자자 본인의 판단</span>으로 이루어져야 합니다.</Bullet>
           </ul>

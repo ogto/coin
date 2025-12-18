@@ -167,7 +167,7 @@ export default function Consult({ posts = [] }: { posts?: PostItem[] }) {
       <div className="relative mx-auto max-w-6xl px-6">
         {/* 머리말 */}
         <div className="mb-12 text-center">
-          <div className="text-[11px] tracking-[0.18em] text-black/45">BUNNY STOCK SERVICE</div>
+          <div className="text-[11px] tracking-[0.18em] text-black/45">Hae Gang SERVICE</div>
           <h2 className="mt-1 text-3xl font-bold text-black sm:text-4xl">비대면으로 간편하게 상담을 신청하세요</h2>
           <p className="mx-auto mt-2 max-w-2xl text-sm text-black/60 sm:text-base">
             문의를 남겨주시면 담당자가 확인 후 연락드립니다.

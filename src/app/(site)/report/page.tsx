@@ -50,7 +50,7 @@ export default function BunnyStockReportPage() {
         title="📅 주간/월간 시장 리포트"
         image="/new_images/18.jpg"
       >
-        <p>Bunny Stock은 정기적으로 발간되는 시장 리포트를 통해 국내외 금융시장의 주요 흐름과 변화를 종합적으로 제공합니다.</p>
+        <p>Hae Gang은 정기적으로 발간되는 시장 리포트를 통해 국내외 금융시장의 주요 흐름과 변화를 종합적으로 제공합니다.</p>
 
         {/* 🗓 주간 브리핑 */}
         <SubTitle>주간 브리핑</SubTitle>
@@ -91,7 +91,7 @@ export default function BunnyStockReportPage() {
         title="🛡 리스크 관리 가이드"
         // image="/new_images/20.png"
       >
-        <p>Bunny Stock은 투자 과정에서 발생할 수 있는 다양한 위험 요소를 체계적으로 관리할 수 있도록 가이드를 제공합니다.</p>
+        <p>Hae Gang은 투자 과정에서 발생할 수 있는 다양한 위험 요소를 체계적으로 관리할 수 있도록 가이드를 제공합니다.</p>
         <Bullet>시장 리스크 점검: 금리, 환율, 원자재 가격 등 주요 리스크 요인 분석</Bullet>
         <Bullet>자산별 리스크 관리: 주식·채권·원자재·디지털자산 등 자산군별 특성에 따른 위험 관리</Bullet>
         <Bullet>투자 심리 분석: 과도한 공포·탐욕이 투자 결정에 미치는 영향 소개</Bullet>
@@ -111,7 +111,7 @@ export default function BunnyStockReportPage() {
         <Bullet>빅데이터 매크로 분석: 글로벌 뉴스·정책 발표·SNS 데이터까지 크롤링하여 정량화</Bullet>
         <Bullet>예측 모델링: 머신러닝 기반의 단기·중기 시장 시나리오 제시</Bullet>
         <Bullet>시각화 리포트: 복잡한 데이터를 차트·대시보드 형태로 가독성 있게 제공</Bullet>
-        <p>AI 분석은 사람의 직관과 결합될 때 가장 큰 효과를 발휘합니다. Bunny Stock은 데이터 기반 사고방식을 지원하여 투자자의 의사결정을 강화합니다.</p>
+        <p>AI 분석은 사람의 직관과 결합될 때 가장 큰 효과를 발휘합니다. Hae Gang은 데이터 기반 사고방식을 지원하여 투자자의 의사결정을 강화합니다.</p>
       </SectionBlock>
     </main>
   );

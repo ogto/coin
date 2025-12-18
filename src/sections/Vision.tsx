@@ -208,7 +208,7 @@ export default function Vision() {
           style={{ textShadow: "0 12px 30px rgba(0,0,0,.5), 0 3px 8px rgba(0,0,0,.4)" }}
         >
           깊이 있는 시장 분석과 최신 기술 트렌드를 기반으로 데이터 중심의 인사이트를 제공합니다.
-          BUNNY STOCK은 신호와 노이즈를 구분하고, 데이터가 말하는 근거 위에서 전략적 판단을 설계합니다.
+          Hae Gang은 신호와 노이즈를 구분하고, 데이터가 말하는 근거 위에서 전략적 판단을 설계합니다.
         </motion.p>
 
         <motion.p
