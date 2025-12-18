@@ -1,8 +1,10 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-const MAIN_HOST  = "bunnystock.io";
-const ADMIN_HOST = "admin.bunnystock.io";
+// const MAIN_HOST  = "bunnystock.io";
+const MAIN_HOST  = "haegang.io";
+// const ADMIN_HOST = "admin.bunnystock.io";
+const ADMIN_HOST = "admin.haegang.io";
 
 export const config = {
   matcher: [

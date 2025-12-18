@@ -22,7 +22,7 @@ export default function LoginForm() {
           <Lock className="h-6 w-6 text-white/90" />
         </div>
         <h1 className="mt-3 text-xl font-bold text-white">관리자 로그인</h1>
-        <p className="mt-1 text-sm text-white/60">admin.bunnystock.io</p>
+        <p className="mt-1 text-sm text-white/60">admin.haegang.io</p>
       </div>
 
       <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 focus-within:ring-2 focus-within:ring-emerald-400/50">
