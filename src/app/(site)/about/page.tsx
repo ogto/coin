@@ -138,10 +138,10 @@ export default function AboutPage() {
             </div>
 
             <blockquote className="text-[15px] leading-7 text-white/90 md:text-base">
-              {`"Hae Gang은 단순히 정보를 전달하는 회사를 넘어, 투자자가 스스로 분석하고 판단할 수 있는 힘을 길러주는 동반자입니다.
+              {`Hae Gang은 단순히 정보를 전달하는 회사를 넘어, 투자자가 스스로 분석하고 판단할 수 있는 힘을 길러주는 동반자입니다.
 복잡하고 변동성이 큰 금융시장에서 중요한 것은 '누구의 말'이 아니라 '객관적인 데이터와 스스로의 판단'입니다.
 우리는 정보의 투명성, 분석의 전문성, 운영의 책임성을 바탕으로 건전한 투자 문화를 만들어가고자 합니다.
-앞으로도 Hae Gang은 투자자의 권익을 보호하고, 장기적 성장을 지원하는 신뢰할 수 있는 파트너로 함께 하겠습니다."`}
+앞으로도 Hae Gang은 투자자의 권익을 보호하고, 장기적 성장을 지원하는 신뢰할 수 있는 파트너로 함께 하겠습니다.`}
             </blockquote>
 
             <div className="mt-3 text-right text-xs text-white/60">— 대표이사 이서우</div>
