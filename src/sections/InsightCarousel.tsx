@@ -131,10 +131,10 @@ export default function InsightCarouselSection() {
           <div>
             <div className="flex items-center gap-2 text-[11px] tracking-[0.18em] text-black/45">
               <FlaskConical className="h-3.5 w-3.5" />
-              BUNNYSTOCK LAB
+              HAEGANG LAB
             </div>
             <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-black sm:text-4xl">
-              Bunnystock Lab
+              HaeGang Lab
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-black/60 sm:text-base">
               인사이트·리포트·리스크·AI 분석을 한 곳에서.

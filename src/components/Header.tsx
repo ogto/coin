@@ -121,7 +121,7 @@ export default function Header() {
           ].join(" ")}
         >
           <Image
-            src="/images/logo.png"
+            src="/images/logo_new.png"
             alt="Hae Gang"
             fill
             priority

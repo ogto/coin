@@ -112,7 +112,7 @@ export default function SupportCompliancePage() {
           {/* 유사투자자문업 법적 고지 */}
           <Card id="advisory" accent="amber" icon={<AlertTriangle className="h-4.5 w-4.5 text-amber-300" />} title="유사투자자문업 법적 고지">
             <Bullets>
-              <Bullet>버니스탁은 ‘유사투자자문업자’로 정식 금융투자업자가 아님</Bullet>
+              <Bullet>해강은 ‘유사투자자문업자’로 정식 금융투자업자가 아님</Bullet>
               <Bullet>개별 1:1 투자자문 불가 (불특정 다수 대상 정보제공만 가능)</Bullet>
               <Bullet>금융위원회 신고된 유사투자자문업자임을 명시</Bullet>
             </Bullets>

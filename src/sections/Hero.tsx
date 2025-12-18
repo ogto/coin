@@ -84,7 +84,7 @@ export default function Hero() {
               <div className="text-3xl font-semibold tracking-wide">
                 Hae Gang
               </div>
-              <div className="text-sm opacity-90">버니스탁</div>
+              <div className="text-sm opacity-90">해강</div>
             </div>
           </motion.div>
 

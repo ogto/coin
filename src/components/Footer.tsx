@@ -20,7 +20,7 @@ export default function Footer() {
           <div className="md:col-span-2">
             <div className="flex flex-col items-start gap-3">
               <Image
-                src="/images/logo.png"
+                src="/images/logo_new.png"
                 alt="Hae Gang"
                 width={128}
                 height={128}
@@ -102,7 +102,7 @@ export default function Footer() {
         {/* 회사 정보 + 카피라이트 */}
         <div className="grid gap-4 py-8 md:grid-cols-2">
           <div className="text-xs leading-6 text-white/60">
-            <div>상호: 버니스탁 주식회사 / Hae Gang Co, Ltd. | 대표: 이서우 | 사업자등록번호: 110-86-19547</div>
+            <div>상호: 해강 주식회사 / Hae Gang Co, Ltd. | 대표: 이서우 | 사업자등록번호: 110-86-19547</div>
             <div>주소: 서울특별시 강남구 도곡로 7길, 5층 | Email. info@Bunnystock.io</div>
           </div>
           <div className="flex items-end justify-start md:justify-end">
